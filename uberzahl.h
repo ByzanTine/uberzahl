@@ -11,12 +11,13 @@ class uberzahl {
     const uberzahl& operator = ( const uberzahl& );
     const uberzahl& operator = ( const char* number ); // string or char*? 
     
-    unsigned int* value;
+    unsigned int* value; // the value currently stored
     friend ostream& operator << ( ostream&, uberzahl );
 
   private:
-    unsigned int* workbench;
-    unsigned int bitsize;
+    unsigned int* workbench; // a secondary work area
+    unsigned int bitsize; // the high bit position of the number
+    unsigned int memorysize; // the amount of int space allocated
 
     // comparators
     bool operator > ( const uberzahl& );
