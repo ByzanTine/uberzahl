@@ -1,11 +1,15 @@
+#ifndef UBERZAHL_H
+#define UBERZAHL_H
+#include<iostream>
+
 class uberzahl {
   public:
     uberzahl ( void );
     ~uberzahl ( void );
     
-    uberzahl ( const string& ); // string or char* ?
+    uberzahl ( const char* number ); // string or char* ?
     const uberzahl& operator = ( const uberzahl& );
-    const uberzahl& operator = ( const string& ); // string or char*? 
+    const uberzahl& operator = ( const char* number ); // string or char*? 
     
     unsigned int* value;
     friend ostream& operator << ( ostream&, uberzahl );
@@ -14,7 +18,7 @@ class uberzahl {
     unsigned int* workbench;
     unsigned int bitsize;
 
-    // comparitors
+    // comparators
     bool operator > ( const uberzahl& );
     bool operator < ( const uberzahl& );
     bool operator >= ( const uberzahl& );
@@ -33,3 +37,5 @@ class uberzahl {
     const uberzahl& operator & ( const uberzahl& );
     const uberzahl& operator ^ ( const uberzahl& );
 }
+
+#endif
