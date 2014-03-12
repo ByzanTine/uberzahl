@@ -428,20 +428,22 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
 
 uberzahl uberzahl::random ( unsigned int bits ){
   assert( bits > 0 );
+  value_vector.clear();
 
   unsigned int shortbits = bits % maxBits;
   unsigned int longbits = bits / maxBits;
-  uberzahl retval = rand();
   
-  // guarenteed to be 16 bits of entropy
-  for ( size_t i = 0; i < longbits; ++i )
-    retval.value_vector.push_back( rand() );
+  for ( size_t i = 0; i <= longbits; ++i )
+    value_vector.push_back( rand() );
 
-  if ( shortbits )
-    retval.value_vector[ longbits ] >> ( maxBits - shortbits );
-  else
-    retval.value_vector.pop_back();
+  if ( shortbits ){
+    value_vector[longbits] = value_vector[longbits] >> (maxBits - shortbits);
+    value_vector[longbits] = value_vector[longbits] | (1 << shortbits);
+  }
+  else{
+    value_vector.pop_back();
+    value_vector[longbits-1] = value_vector[longbits-1] | (1 << (maxBits-1));
+  }
 
-  uberzahl bitmask = 1;
-  return ( retval | (bitmask << bits) );
+  return *this;
 }
