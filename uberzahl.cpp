@@ -424,3 +424,23 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   retval.clean_bits();
   return retval;
 }
+
+uberzahl uberzahl::rand ( unsigned int bits ){
+  assert( bits > 0 );
+
+  unsigned int shortbits = bits % maxBits;
+  unsigned int longbits = bits / maxBits;
+  uberzahl retval = rand();
+  
+  // guarenteed to be 16 bits of entropy
+  for ( size_t i = 0; i < longbits; ++i )
+    retval.value_vector.push_back( rand() );
+
+  if ( shortbits )
+    retval.value_vector[ longbits ] >> ( maxBits - shortbits );
+  else
+    retval.value_vector.pop_back();
+
+  uberzahl bitsmask = 1;
+  return ( retval | (bitmask << bits) );
+}

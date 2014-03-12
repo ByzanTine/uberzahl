@@ -39,7 +39,9 @@ class uberzahl {
 
     // Emily Update
     // inverses
-    // random
+
+    // uses the rand function - to seed use srand (unsigned int seed);
+    uberzahl rand ( unsigned int );
 
   private:
     std::string string_value;
