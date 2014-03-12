@@ -2,6 +2,7 @@
 #include<string>
 #include<vector>
 #include<assert.h>
+#include<cstdlib>
 
 #include"uberzahl.h"
 #define maxBits (8 * sizeof(int))
@@ -425,7 +426,7 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   return retval;
 }
 
-uberzahl uberzahl::rand ( unsigned int bits ){
+uberzahl uberzahl::random ( unsigned int bits ){
   assert( bits > 0 );
 
   unsigned int shortbits = bits % maxBits;
@@ -441,6 +442,6 @@ uberzahl uberzahl::rand ( unsigned int bits ){
   else
     retval.value_vector.pop_back();
 
-  uberzahl bitsmask = 1;
+  uberzahl bitmask = 1;
   return ( retval | (bitmask << bits) );
 }
