@@ -3,15 +3,11 @@ using namespace std;
 #include "uberzahl.h"
 
 int main( void ){
-<<<<<<< HEAD
-  uberzahl a = 9;
-  uberzahl b = a << 63;
-  uberzahl c = b >> 64;
-  cout << a+"0";
-  cout << b+"0";
-  cout << c+"0";
-=======
-  unsigned int x = -2;
+  uberzahl x = "8";
+  uberzahl y = "4";
+  cout << x / y << endl;
+  
+  /*unsigned int x = -2;
   uberzahl a = x;
   uberzahl b = "5";
   cout << (a + 1);
@@ -48,7 +44,6 @@ int main( void ){
   if (l < l) cout << "l < l" << endl; 
 
   cout << j; 
-  cout << k;
->>>>>>> d0bc5e8311984b91c199079aee2618fae19ba0f7
+  cout << k;*/
 }
 

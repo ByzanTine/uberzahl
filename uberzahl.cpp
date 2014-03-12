@@ -157,12 +157,11 @@ uberzahl uberzahl::operator * ( uberzahl number ){
   return retval;
 }
 
-// TODO - implement this
 uberzahl uberzahl::operator / ( uberzahl number ){
   uberzahl x = *this;
   uberzahl y = number;
   uberzahl q = "0";
-  /*
+
   assert( y != "0" ); // y can not be 0 in our division algorithm
   if ( x > y ) return q; // return 0 since y > x
   
@@ -206,11 +205,12 @@ uberzahl uberzahl::operator / ( uberzahl number ){
     while ( q.value_vector[i-t-1]*workbench2 > workbench )
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
 
-    if ( x < x - q.value_vector[i-t-1] * ( y << ( maxBits*(i-t-1) ) )
-      x = x - (q.value_vector[i-t-1]-1) * ( y << ( maxBits*(i-t-1) ) );
+    unsigned int quot = q.value_vector[i-t-1];
+    if ( x < (x - ((y << (maxBits*(i-t-1))) * quot) ) )
+      x = x - ((y << (maxBits*(i-t-1))) * ( quot - 1 ));
     else
-      x = x - q.value_vector[i-t-1] * ( y << ( maxBits*(i-t-1) ) );
-  }*/
+      x = x - ((y << (maxBits*(i-t-1))) * quot);
+  }
   
   return q;
 }
