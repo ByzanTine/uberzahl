@@ -214,6 +214,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   for ( size_t i=n; i > t; --i ){
 
     unsigned long long workbench = x.value_vector[i];
+    std::cout << sizeof(unsigned long long) << " : " << sizeof(unsigned long) << " : " << sizeof(unsigned int) << std::endl;
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-1];
 
@@ -326,7 +327,7 @@ bool uberzahl::operator <= (const uberzahl& rhs) const
     if ( value_vector[i] > 0 )
       return false;
 
-  for ( size_t i=rhs; i > 0; ++i )
+  for ( size_t i=rhs_size; i > 0; ++i )
     if ( value_vector[i-1] > rhs.value_vector[i-1] )
       return false;
 
@@ -344,7 +345,7 @@ bool uberzahl::operator >= (const uberzahl& rhs) const
     if ( value_vector[i] > 0 )
       return true;
 
-  for ( size_t i=rhs; i > 0; ++i )
+  for ( size_t i=rhs_size; i > 0; ++i )
     if ( value_vector[i-1] < rhs.value_vector[i-1] )
       return false;
 
