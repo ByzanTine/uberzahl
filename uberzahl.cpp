@@ -159,10 +159,10 @@ uberzahl uberzahl::operator * ( const uberzahl& input ) const
   size_t t = y.value_vector.size() - 1;
   uberzahl retval = "0";
   retval.value_vector.clear();
-  
+
   unsigned int carry = 0;
   unsigned long workbench = 0;
-  
+
   // this assumes your uberzahls dont use up your entire hard
   // drive of space to store a number... I feel it is a fair
   // assumption.
@@ -190,12 +190,12 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 
   assert( y != "0" ); // y can not be 0 in our division algorithm
   if ( x > y ) return q; // return 0 since y > x
-  
+
   while ( x.value_vector.size() > 1 && x.value_vector.back() == 0 )
     x.value_vector.pop_back();
   while ( y.value_vector.size() > 1 && y.value_vector.back() == 0 )
     y.value_vector.pop_back();
-  
+
   size_t n = x.value_vector.size() - 1;
   size_t t = y.value_vector.size() - 1;
 
@@ -212,7 +212,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 
   // step 3 -- the annoying part
   for ( size_t i=n; i > t; --i ){
-  
+
     unsigned long long workbench = x.value_vector[i];
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-1];
@@ -237,7 +237,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     else
       x = x - ((y << (maxBits*(i-t-1))) * quot);
   }
-  
+
   q.clean_bits();
   return q;
 }
@@ -271,7 +271,7 @@ void uberzahl::convert_to_numeric ( void ){
       numeric_value = numeric_value | ( 1 << (maxBits-1) );
       workbench[len-1] = workbench[len-1] ^ 1;
     }
-    
+
     for ( size_t i = workbench.length(); i > 0; --i ){
       // constant consistancy check! if this algorithm fails I want to know
       assert( workbench[i-1] >= '0' && workbench[i-1] <= '9' );
@@ -303,11 +303,10 @@ void uberzahl::convert_to_numeric ( void ){
 // prints the string and the associated vector
 // [string]
 // [low order] [higher order] [higher order] ... [highest order]
-std::ostream& operator << ( std::ostream& ost, uberzahl number ){
+std::ostream& operator << ( std::ostream& ost, const uberzahl& number ){
   ost << "string : " << number.string_value << std::endl << "base-256 : ";
-  for ( std::vector<unsigned int>::iterator it = number.value_vector.begin();
-      it != number.value_vector.end(); ++it )
-    ost << *it << ' ';
+  for ( size_t i = 0; i < number.value_vector.size(); ++ i )
+    ost << number.value_vector[i] << ' ';
   ost << std::endl;
 
   return ost;
@@ -317,63 +316,63 @@ std::ostream& operator << ( std::ostream& ost, uberzahl number ){
 /* returns FALSE if the two uberzahl numbers are not equal;
  * else returns TRUE
  */ 
-bool uberzahl::operator == (const uberzahl rhs) {
-	/* if two of these UberZahl numbers are equal, that means that each element of the respective vectors is equal */
+bool uberzahl::operator == (const uberzahl& x) const
+{
+  uberzahl rhs = x;
+  uberzahl lhs = *this;
 
-	if (this->value_vector.size() != rhs.value_vector.size()) {
-		return false;
-	}	
+  // pad extra zeros onto the left of the smaller uberzahl number
+  while ( lhs.value_vector.size() != rhs.value_vector.size() )
+    if ( lhs.value_vector.size() > rhs.value_vector.size() )
+      rhs.value_vector.push_back(0);
+    else 
+      lhs.value_vector.push_back(0);
 
-	// compare from highest order "byte" to lowest order "byte" 
-	for (size_t i = rhs.value_vector.size(); i > 0; --i) {
-		if (this->value_vector.at(i-1) != rhs.value_vector.at(i-1)) {
-			return false; 
-		}
-	}
+  for (size_t i = rhs.value_vector.size(); i > 0; --i)
+    if (lhs.value_vector.at(i-1) != rhs.value_vector.at(i-1))
+      return false; 
 
-	return true; 
+  return true; 
 }
 
 /* returns FALSE if the uberzahl number being passed in is larger;
  * else returns TRUE
  */
-bool uberzahl::operator <= (uberzahl rhs) {
-	
-	if (this->value_vector.size() > rhs.value_vector.size()) {
-		return false;
-	}	
+bool uberzahl::operator <= (const uberzahl& x) const
+{
+  uberzahl rhs = x;
+  uberzahl lhs = *this;
 
-	// pad extra zeros onto the left of the smaller uberzahl number
-  	while ( value_vector.size() != rhs.value_vector.size() ) {
-    		if ( value_vector.size() > rhs.value_vector.size() ) {
-      			rhs.value_vector.push_back(0);
-		}
-    		else {
-      			value_vector.push_back(0);
-		}
-	}
-	
-	for (size_t i = rhs.value_vector.size(); i > 0; --i) {
-		if (this->value_vector.at(i-1) > rhs.value_vector.at(i-1)) {
-			return false; 
-		}
-	}	
+  // pad extra zeros onto the left of the smaller uberzahl number
+  while ( lhs.value_vector.size() != rhs.value_vector.size() )
+    if ( lhs.value_vector.size() > rhs.value_vector.size() )
+      rhs.value_vector.push_back(0);
+    else 
+      lhs.value_vector.push_back(0);
 
-	return true; 
+  for (size_t i = rhs.value_vector.size(); i > 0; --i)
+    if (lhs.value_vector.at(i-1) > rhs.value_vector.at(i-1))
+      return false; 
+
+  return true; 
 }
 
-bool uberzahl::operator < ( const uberzahl rhs ){
+bool uberzahl::operator < ( const uberzahl& rhs ) const
+{
   return !( *this == rhs ) && ( *this <= rhs );
 }
 
-bool uberzahl::operator >= ( const uberzahl rhs ){
+bool uberzahl::operator >= ( const uberzahl& rhs ) const
+{
   return !( *this < rhs );
 }
 
-bool uberzahl::operator > ( const uberzahl rhs ){
+bool uberzahl::operator > ( const uberzahl& rhs ) const
+{
   return !( *this <= rhs );
 }
 
-bool uberzahl::operator != ( const uberzahl rhs ){
+bool uberzahl::operator != ( const uberzahl& rhs ) const
+{
   return !( *this == rhs );
 }

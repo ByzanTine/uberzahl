@@ -5,9 +5,9 @@ using namespace std;
 int main( void ){
   unsigned int a = -1;
   uberzahl x = a;
-  uberzahl y = 5;
+  uberzahl y = "50";
 //  uberzahl y = "4";
-  cout << x / y << endl;
+  cout << x << ( x << 1 ) << ( x << 5 ) << x / y << endl;
   
   /*unsigned int x = -2;
   uberzahl a = x;
