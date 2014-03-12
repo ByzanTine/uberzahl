@@ -10,8 +10,6 @@ class uberzahl {
     ~uberzahl ( void );
     uberzahl ( const char* );
     uberzahl ( const uberzahl& );
-    
-    const uberzahl& operator = ( const char* ); 
     const uberzahl& operator = ( uberzahl );
     
     friend std::ostream& operator << ( std::ostream&, uberzahl );
