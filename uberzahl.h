@@ -11,16 +11,16 @@ class uberzahl {
     uberzahl ( const char* );
     uberzahl ( unsigned long long );
     uberzahl ( const uberzahl& );
-    const uberzahl& operator = ( uberzahl );
+    const uberzahl& operator = ( const uberzahl& );
     
     friend std::ostream& operator << ( std::ostream&, uberzahl );
     
     // arithmetic
-    uberzahl operator + ( uberzahl );
-    uberzahl operator - ( uberzahl );
-    uberzahl operator * ( uberzahl );
-    uberzahl operator / ( uberzahl );
-    uberzahl operator % ( uberzahl );
+    uberzahl operator + ( const uberzahl& ) const;
+    uberzahl operator - ( const uberzahl& ) const;
+    uberzahl operator * ( const uberzahl& ) const;
+    uberzahl operator / ( const uberzahl& ) const;
+    uberzahl operator % ( const uberzahl& ) const;
     
     // comparators
     bool operator > ( const uberzahl );
@@ -34,14 +34,15 @@ class uberzahl {
     uberzahl operator | ( uberzahl );
     uberzahl operator & ( uberzahl );
     uberzahl operator ^ ( uberzahl );
-    uberzahl operator >> ( unsigned int );
-    uberzahl operator << ( unsigned int );
+    uberzahl operator >> ( unsigned int ) const;
+    uberzahl operator << ( unsigned int ) const;
 
   private:
     std::string string_value;
     std::vector<unsigned int> value_vector;
     void convert_to_numeric ( void );
     void convert_to_string ( void );
+    void clean_bits ( void );
 };
 
 #endif

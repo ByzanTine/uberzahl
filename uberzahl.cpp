@@ -27,21 +27,31 @@ uberzahl::uberzahl ( const char* number ){
 
 uberzahl::uberzahl ( const uberzahl& number ){
   string_value = number.string_value;
-  convert_to_numeric();
+  for ( size_t i=0; i < number.value_vector.size(); ++i )
+    value_vector.push_back( number.value_vector[i] );
+  clean_bits();
 }
 
 uberzahl::~uberzahl ( void )
 { ;;; }
 
-const uberzahl& uberzahl::operator = ( uberzahl number ){
+const uberzahl& uberzahl::operator = ( const uberzahl& number )
+{
   if ( this == &number ) return *this;
-
-  number.convert_to_string();
   string_value = number.string_value;
-  convert_to_numeric();
+  for ( size_t i=0; i < number.value_vector.size(); ++i )
+    value_vector.push_back( number.value_vector[i] );
+  clean_bits();
 }
 
-uberzahl uberzahl::operator << ( unsigned int shift ){
+void uberzahl::clean_bits ( void ){
+  while ( value_vector.size() > 1 && !value_vector.back() )
+    value_vector.pop_back();
+}
+
+
+uberzahl uberzahl::operator << ( unsigned int shift ) const
+{
   uberzahl retval = "0";
   retval.value_vector.pop_back();
   unsigned int largeshift = shift / maxBits;
@@ -58,10 +68,12 @@ uberzahl uberzahl::operator << ( unsigned int shift ){
     retval.value_vector[i+largeshift+1] += workspace;
   }
 
+  retval.clean_bits();
   return retval;
 }
 
-uberzahl uberzahl::operator >> ( unsigned int shift ){
+uberzahl uberzahl::operator >> ( unsigned int shift ) const
+{
   uberzahl retval = "0";
   unsigned int largeshift = shift / maxBits;
   unsigned int smallshift = shift % maxBits;
@@ -77,62 +89,74 @@ uberzahl uberzahl::operator >> ( unsigned int shift ){
     retval.value_vector[i] += workspace;
   }
 
+  retval.clean_bits();
   return retval;
 }
 
-uberzahl uberzahl::operator + ( uberzahl number ){
+uberzahl uberzahl::operator + ( const uberzahl& input ) const
+{
+  uberzahl x = *this;
+  uberzahl y = input;
   unsigned long workbench = 0;
   uberzahl retval = "0";
   retval.value_vector.clear();
 
   // pad extra zeros onto the left of the smaller
-  while ( value_vector.size() != number.value_vector.size() )
-    if ( value_vector.size() > number.value_vector.size() )
-      number.value_vector.push_back(0);
+  while ( x.value_vector.size() != y.value_vector.size() )
+    if ( x.value_vector.size() > y.value_vector.size() )
+      y.value_vector.push_back(0);
     else
-      value_vector.push_back(0);
+      x.value_vector.push_back(0);
 
   // perform addition operation
-  for ( size_t i = 0; i < value_vector.size(); ++i ){
-    workbench = workbench + value_vector[i] + number.value_vector[i];
+  for ( size_t i = 0; i < x.value_vector.size(); ++i ){
+    workbench = workbench + x.value_vector[i] + y.value_vector[i];
     retval.value_vector.push_back(workbench);
     workbench = workbench >> maxBits;
   }
 
   // add carry bit
   retval.value_vector.push_back(workbench);
+  retval.clean_bits();
   return retval;
 }
 
-uberzahl uberzahl::operator - ( uberzahl number ){
+uberzahl uberzahl::operator - ( const uberzahl& input ) const
+{
+  uberzahl x = *this;
+  uberzahl y = input;
   unsigned long workbench = 0;
   uberzahl retval = "0";
-  retval.value_vector.clear();
 
   // constraint that left side !< right side
-  if ( *this < number ) return retval;
+  if ( x < y ) return retval;
+  retval.value_vector.clear();
 
   // pad extra zeros onto the left of the smaller
-  while ( value_vector.size() != number.value_vector.size() )
-    if ( value_vector.size() > number.value_vector.size() )
-      number.value_vector.push_back(0);
+  while ( x.value_vector.size() != y.value_vector.size() )
+    if ( x.value_vector.size() > y.value_vector.size() )
+      y.value_vector.push_back(0);
     else
-      value_vector.push_back(0);
+      x.value_vector.push_back(0);
 
   // perform subtraction
-  for ( size_t i = 0; i < value_vector.size(); ++i ){
-    workbench = -workbench + value_vector[i] - number.value_vector[i];
+  for ( size_t i = 0; i < x.value_vector.size(); ++i ){
+    workbench = -workbench + x.value_vector[i] - y.value_vector[i];
     retval.value_vector.push_back(workbench);
     workbench = workbench >> maxBits;
     if ( workbench ) workbench = 1;
   }
 
+  retval.clean_bits();
   return retval;
 }
 
-uberzahl uberzahl::operator * ( uberzahl number ){
-  size_t n = value_vector.size() - 1;
-  size_t t = number.value_vector.size() - 1;
+uberzahl uberzahl::operator * ( const uberzahl& input ) const
+{
+  uberzahl x = *this;
+  uberzahl y = input;
+  size_t n = x.value_vector.size() - 1;
+  size_t t = y.value_vector.size() - 1;
   uberzahl retval = "0";
   retval.value_vector.clear();
   
@@ -147,17 +171,19 @@ uberzahl uberzahl::operator * ( uberzahl number ){
   for ( size_t i = 0; i <= t; ++i ){
     carry = 0;
     for ( size_t j = 0; j <= n; ++ j ){
-      workbench = retval.value_vector[i+j] + ((unsigned long) value_vector[j])*number.value_vector[i] + carry;
+      workbench = retval.value_vector[i+j] + ((unsigned long) x.value_vector[j])*y.value_vector[i] + carry;
       retval.value_vector[i+j] = workbench;
       carry = workbench >> maxBits;
     }
   }
 
   retval.value_vector[n+t+1] = carry;
+  retval.clean_bits();
   return retval;
 }
 
-uberzahl uberzahl::operator / ( uberzahl number ){
+uberzahl uberzahl::operator / ( const uberzahl& number ) const
+{
   uberzahl x = *this;
   uberzahl y = number;
   uberzahl q = "0";
@@ -212,12 +238,16 @@ uberzahl uberzahl::operator / ( uberzahl number ){
       x = x - ((y << (maxBits*(i-t-1))) * quot);
   }
   
+  q.clean_bits();
   return q;
 }
 
 
-uberzahl uberzahl::operator % ( uberzahl number ){
-  return *this - ( *this / number );
+uberzahl uberzahl::operator % ( const uberzahl& number ) const
+{
+  uberzahl retval = *this - ( *this / number );
+  retval.clean_bits();
+  return retval;
 }
 
 // convert the stored numeric_value into a string
@@ -274,7 +304,7 @@ void uberzahl::convert_to_numeric ( void ){
 // [string]
 // [low order] [higher order] [higher order] ... [highest order]
 std::ostream& operator << ( std::ostream& ost, uberzahl number ){
-  ost << number.string_value << std::endl;
+  ost << "string : " << number.string_value << std::endl << "base-256 : ";
   for ( std::vector<unsigned int>::iterator it = number.value_vector.begin();
       it != number.value_vector.end(); ++it )
     ost << *it << ' ';

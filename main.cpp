@@ -3,8 +3,10 @@ using namespace std;
 #include "uberzahl.h"
 
 int main( void ){
-  uberzahl x = "8";
-  uberzahl y = "4";
+  unsigned int a = -1;
+  uberzahl x = a;
+  uberzahl y = 5;
+//  uberzahl y = "4";
   cout << x / y << endl;
   
   /*unsigned int x = -2;
