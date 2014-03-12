@@ -283,26 +283,15 @@ std::ostream& operator << ( std::ostream& ost, uberzahl number ){
   return ost;
 }
 
-/* -----------=================---------------========
- * ASSUMING NUMBERS DO NOT START WITH LEADING ZEROS... 
- * -----------=================---------------========
- */
-
 
 /* returns FALSE if the two uberzahl numbers are not equal;
  * else returns TRUE
  */ 
 bool uberzahl::operator == (const uberzahl rhs) {
-	/* if two of these UberZahl numbers are equal, that means that each element of the vector is equal */
-	
-	// if the string forms of a and b are different lengths, they can't be equal
-	// for all practical purposes, I'm assuming that the user input's string length will not be longer than the size of an unsigned long int
-	
-	unsigned long len_lhs = this->string_value.length(); 
-	unsigned long len_rhs = rhs.string_value.length();
-        // lengths are different
-	if (len_lhs != len_rhs) {
-		return false; 
+	/* if two of these UberZahl numbers are equal, that means that each element of the respective vectors is equal */
+
+	if (this->value_vector.size() != rhs.value_vector.size()) {
+		return false;
 	}	
 
 	// compare from highest order "byte" to lowest order "byte" 
@@ -318,12 +307,20 @@ bool uberzahl::operator == (const uberzahl rhs) {
 /* returns FALSE if the uberzahl number being passed in is larger;
  * else returns TRUE
  */
-bool uberzahl::operator <= (const uberzahl rhs) {
+bool uberzahl::operator <= (uberzahl rhs) {
 	
-	unsigned long len_lhs = this->string_value.length(); 
-	unsigned long len_rhs = rhs.string_value.length(); 
-	if (len_rhs > len_lhs) {
+	if (this->value_vector.size() > rhs.value_vector.size()) {
 		return false;
+	}	
+
+	// pad extra zeros onto the left of the smaller uberzahl number
+  	while ( value_vector.size() != rhs.value_vector.size() ) {
+    		if ( value_vector.size() > rhs.value_vector.size() ) {
+      			rhs.value_vector.push_back(0);
+		}
+    		else {
+      			value_vector.push_back(0);
+		}
 	}
 	
 	for (size_t i = rhs.value_vector.size(); i > 0; --i) {
@@ -344,7 +341,7 @@ bool uberzahl::operator >= ( const uberzahl rhs ){
 }
 
 bool uberzahl::operator > ( const uberzahl rhs ){
-  return !( *this >= rhs );
+  return !( *this <= rhs );
 }
 
 bool uberzahl::operator != ( const uberzahl rhs ){

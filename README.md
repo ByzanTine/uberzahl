@@ -8,9 +8,6 @@ The number is stored in two forms :
       string format -- only when inputing/outputing the number
       integer format -- whenever an arithmetic operation is performed
 
-Some notes: 
-   - please make sure numbers do not start with leading 0s 
-
 The main purpose of this library is to give an unoptimized version
 of the traditional modular operation for use at the University of Michigan
 in EECS 475.
