@@ -41,6 +41,45 @@ const uberzahl& uberzahl::operator = ( uberzahl number ){
   convert_to_numeric();
 }
 
+uberzahl uberzahl::operator << ( unsigned int shift ){
+  uberzahl retval = "0";
+  retval.value_vector.pop_back();
+  unsigned int largeshift = shift / maxBits;
+  unsigned int smallshift = shift % maxBits;
+
+  for ( size_t i=0; i < largeshift + value_vector.size() + 1; ++i )
+    retval.value_vector.push_back(0);
+
+  for ( size_t i=0; i < value_vector.size(); ++i )
+    retval.value_vector[i+largeshift] = value_vector[i] << smallshift;
+  for ( size_t i=0; i < value_vector.size(); ++i ){
+    unsigned long workspace = value_vector[i];
+    workspace = workspace >> ( maxBits - smallshift );
+    retval.value_vector[i+largeshift+1] += workspace;
+  }
+
+  return retval;
+}
+
+uberzahl uberzahl::operator >> ( unsigned int shift ){
+  uberzahl retval = "0";
+  unsigned int largeshift = shift / maxBits;
+  unsigned int smallshift = shift % maxBits;
+
+  for ( size_t i=0; i < value_vector.size() - largeshift - 1; ++i )
+    retval.value_vector.push_back(0);
+
+  for ( size_t i=0; i < value_vector.size() - largeshift; ++i )
+    retval.value_vector[i] = value_vector[i + largeshift] >> smallshift;
+  for ( size_t i=0; i < value_vector.size() - largeshift; ++i ){
+    unsigned long workspace = value_vector[i + largeshift + 1];
+    workspace = workspace << ( maxBits - smallshift );
+    retval.value_vector[i] += workspace;
+  }
+
+  return retval;
+}
+
 uberzahl uberzahl::operator + ( uberzahl number ){
   unsigned long workbench = 0;
   uberzahl retval = "0";
@@ -120,6 +159,60 @@ uberzahl uberzahl::operator * ( uberzahl number ){
 
 // TODO - implement this
 uberzahl uberzahl::operator / ( uberzahl number ){
+  uberzahl x = *this;
+  uberzahl y = number;
+  uberzahl q = "0";
+  /*
+  assert( y != "0" ); // y can not be 0 in our division algorithm
+  if ( x > y ) return q; // return 0 since y > x
+  
+  while ( x.value_vector.size() > 1 && x.value_vector.back() == 0 )
+    x.value_vector.pop_back();
+  while ( y.value_vector.size() > 1 && y.value_vector.back() == 0 )
+    y.value_vector.pop_back();
+  
+  size_t n = x.value_vector.size() - 1;
+  size_t t = y.value_vector.size() - 1;
+
+  // step 1 -- initialize q to the correct size
+  q.value_vector.pop_back();
+  for ( size_t i = 0; i <= n - t; ++i )
+    q.value_vector.push_back(0);
+
+  // step 2 -- while our most significant digit of x is large enough, subtract off that copy of y
+  while ( x >= ( y << (maxBits*(n-t)) ) ){
+    q.value_vector[n-t] = q.value_vector[n-t] + 1;
+    x = x - ( y << (maxBits*(n-t)) );
+  }
+
+  // step 3 -- the annoying part
+  for ( size_t i=n; i > t; --i ){
+  
+    unsigned long long workbench = x.value_vector[i];
+    workbench = workbench << maxBits;
+    workbench = workbench + x.value_vector[i-1];
+
+    if ( x.value_vector[i] == y.value_vector[t] )
+      q.value_vector[i-t-1] = -1;
+    else
+      q.value_vector[i-t-1] = workbench / y.value_vector[t];
+
+    workbench = workbench << maxBits;
+    workbench = workbench + x.value_vector[i-2];
+    unsigned long long workbench2 = y.value_vector[t];
+    workbench2 = workbench2 << maxBits;
+    workbench2 = workbench2 + y.value_vector[t-1];
+
+    while ( q.value_vector[i-t-1]*workbench2 > workbench )
+      q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
+
+    if ( x < x - q.value_vector[i-t-1] * ( y << ( maxBits*(i-t-1) ) )
+      x = x - (q.value_vector[i-t-1]-1) * ( y << ( maxBits*(i-t-1) ) );
+    else
+      x = x - q.value_vector[i-t-1] * ( y << ( maxBits*(i-t-1) ) );
+  }*/
+  
+  return q;
 }
 
 

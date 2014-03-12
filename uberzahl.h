@@ -34,6 +34,8 @@ class uberzahl {
     uberzahl operator | ( uberzahl );
     uberzahl operator & ( uberzahl );
     uberzahl operator ^ ( uberzahl );
+    uberzahl operator >> ( unsigned int );
+    uberzahl operator << ( unsigned int );
 
   private:
     std::string string_value;
