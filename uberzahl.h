@@ -15,7 +15,7 @@ class uberzahl {
     
     friend std::ostream& operator << ( std::ostream&, const uberzahl& );
     
-    // arithmetic
+    // arithmetic - not true pass by references :(
     uberzahl operator + ( const uberzahl& ) const;
     uberzahl operator - ( const uberzahl& ) const;
     uberzahl operator * ( const uberzahl& ) const;
@@ -23,7 +23,7 @@ class uberzahl {
     uberzahl operator % ( const uberzahl& ) const;
     
     // comparators
-    bool operator > ( const uberzahl& ) const; // Alex Update
+    bool operator > ( const uberzahl& ) const;
     bool operator < ( const uberzahl& ) const;
     bool operator >= ( const uberzahl& ) const;
     bool operator <= ( const uberzahl& ) const;
@@ -31,7 +31,7 @@ class uberzahl {
     bool operator != ( const uberzahl& ) const;
     
     // bitwize operators
-    uberzahl operator | ( const uberzahl& ) const; // Alex's Stuff
+    uberzahl operator | ( const uberzahl& ) const;
     uberzahl operator & ( const uberzahl& ) const;
     uberzahl operator ^ ( const uberzahl& ) const;
     uberzahl operator >> ( unsigned int ) const;

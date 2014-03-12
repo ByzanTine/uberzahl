@@ -312,59 +312,48 @@ std::ostream& operator << ( std::ostream& ost, const uberzahl& number ){
   return ost;
 }
 
-
-/* returns FALSE if the two uberzahl numbers are not equal;
- * else returns TRUE
- */ 
-bool uberzahl::operator == (const uberzahl& x) const
+// Comparator operators
+// Removed the padding necessity to allow them to be 
+// true const& passes
+bool uberzahl::operator <= (const uberzahl& rhs) const
 {
-  uberzahl rhs = x;
-  uberzahl lhs = *this;
+  size_t lhs_size = value_vector.size();
+  size_t rhs_size = rhs.value_vector.size();
+  if ( lhs_size < rhs_size )
+    return rhs >= *this;
 
-  // pad extra zeros onto the left of the smaller uberzahl number
-  while ( lhs.value_vector.size() != rhs.value_vector.size() )
-    if ( lhs.value_vector.size() > rhs.value_vector.size() )
-      rhs.value_vector.push_back(0);
-    else 
-      lhs.value_vector.push_back(0);
+  for ( size_t i=rhs_size; i < lhs_size; ++i )
+    if ( value_vector[i] > 0 )
+      return false;
 
-  for (size_t i = rhs.value_vector.size(); i > 0; --i)
-    if (lhs.value_vector.at(i-1) != rhs.value_vector.at(i-1))
-      return false; 
+  for ( size_t i=rhs; i > 0; ++i )
+    if ( value_vector[i-1] > rhs.value_vector[i-1] )
+      return false;
 
   return true; 
 }
 
-/* returns FALSE if the uberzahl number being passed in is larger;
- * else returns TRUE
- */
-bool uberzahl::operator <= (const uberzahl& x) const
+bool uberzahl::operator >= (const uberzahl& rhs) const
 {
-  uberzahl rhs = x;
-  uberzahl lhs = *this;
+  size_t lhs_size = value_vector.size();
+  size_t rhs_size = rhs.value_vector.size();
+  if ( lhs_size < rhs_size )
+    return rhs <= *this;
 
-  // pad extra zeros onto the left of the smaller uberzahl number
-  while ( lhs.value_vector.size() != rhs.value_vector.size() )
-    if ( lhs.value_vector.size() > rhs.value_vector.size() )
-      rhs.value_vector.push_back(0);
-    else 
-      lhs.value_vector.push_back(0);
+  for ( size_t i=rhs_size; i < lhs_size; ++i )
+    if ( value_vector[i] > 0 )
+      return true;
 
-  for (size_t i = rhs.value_vector.size(); i > 0; --i)
-    if (lhs.value_vector.at(i-1) > rhs.value_vector.at(i-1))
-      return false; 
+  for ( size_t i=rhs; i > 0; ++i )
+    if ( value_vector[i-1] < rhs.value_vector[i-1] )
+      return false;
 
   return true; 
 }
 
 bool uberzahl::operator < ( const uberzahl& rhs ) const
 {
-  return !( *this == rhs ) && ( *this <= rhs );
-}
-
-bool uberzahl::operator >= ( const uberzahl& rhs ) const
-{
-  return !( *this < rhs );
+  return !( *this >= rhs );
 }
 
 bool uberzahl::operator > ( const uberzahl& rhs ) const
@@ -372,7 +361,65 @@ bool uberzahl::operator > ( const uberzahl& rhs ) const
   return !( *this <= rhs );
 }
 
+bool uberzahl::operator == ( const uberzahl& rhs ) const
+{
+  return ( *this >= rhs ) && ( *this <= rhs );
+}
+
 bool uberzahl::operator != ( const uberzahl& rhs ) const
 {
   return !( *this == rhs );
+}
+
+// Bitwize operators done with true pass by reference
+uberzahl uberzahl::operator | ( const uberzahl& rhs ) const
+{
+  if ( value_vector.size() > rhs.value_vector.size() )
+    return rhs | *this;
+
+  uberzahl retval = "0";
+  retval.value_vector.pop_back();
+  for ( size_t i=0; i < value_vector.size(); ++i ){
+    unsigned int workbench = value_vector[i] | rhs.value_vector[i];
+    retval.value_vector.push_back( workbench );
+  }
+  for ( size_t i=value_vector.size(); i < rhs.value_vector.size(); ++i )
+    retval.value_vector.push_back( rhs.value_vector[i] );
+
+  retval.clean_bits();
+  return retval;
+}
+
+uberzahl uberzahl::operator & ( const uberzahl& rhs ) const
+{
+  if ( value_vector.size() > rhs.value_vector.size() )
+    return rhs | *this;
+
+  uberzahl retval = "0";
+  retval.value_vector.pop_back();
+  for ( size_t i=0; i < value_vector.size(); ++i ){
+    unsigned int workbench = value_vector[i] & rhs.value_vector[i];
+    retval.value_vector.push_back( workbench );
+  }
+
+  retval.clean_bits();
+  return retval;
+}
+
+uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
+{
+  if ( value_vector.size() > rhs.value_vector.size() )
+    return rhs | *this;
+
+  uberzahl retval = "0";
+  retval.value_vector.pop_back();
+  for ( size_t i=0; i < value_vector.size(); ++i ){
+    unsigned int workbench = value_vector[i] ^ rhs.value_vector[i];
+    retval.value_vector.push_back( workbench );
+  }
+  for ( size_t i=value_vector.size(); i < rhs.value_vector.size(); ++i )
+    retval.value_vector.push_back( rhs.value_vector[i] );
+
+  retval.clean_bits();
+  return retval;
 }
