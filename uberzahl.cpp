@@ -86,7 +86,7 @@ const uberzahl& uberzahl::operator / ( const uberzahl& number ){
 }
 
 const uberzahl& uberzahl::operator % ( const uberzahl& number ){
-  return this - ( this / number );
+  return *this - ( *this / number );
 }
 
 // convert the stored numeric_value into a string
