@@ -3,6 +3,8 @@ using namespace std;
 #include "uberzahl.h"
 
 int main( void ){
-  uberzahl a = "4294967296";
+  uberzahl a = "9";
+  uberzahl b;
+  b = a;
   cout << a;
 }

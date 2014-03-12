@@ -25,9 +25,72 @@ const uberzahl& uberzahl::operator = ( const char* number ){
   convert_to_numeric();
 }
 
-const uberzahl& uberzahl::operator = ( const uberzahl& number ){
+const uberzahl& uberzahl::operator = ( uberzahl& number ){
+  number.convert_to_string();
   string_value = number.string_value;
   convert_to_numeric();
+}
+
+const uberzahl& uberzahl::operator + ( const uberzahl& number ){
+  unsigned long workbench;
+  uberzahl retval;
+
+  // pad extra zeros onto the left of the smaller
+  while ( value_vector.size() != number.value_vector.size() )
+    if ( value_vector.size() > number.value_vector.size() )
+      number.value_vector.push_back(0);
+    else
+      value_vector.push_back(0);
+
+  // perform addition operation
+  for ( size_t i = 0; i < value_vector.size(); ++i ){
+    workbench = value_vector[i] + number.value_vector[i] + workbench;
+    retval.value_vector.push_back(workbench);
+    workbench = workbench >> maxBits;
+  }
+
+  // add carry bit
+  retval.value_vector.push_back(workbench);
+  return retval;
+}
+
+const uberzahl& uberzahl::operator - ( const uberzahl& number ){
+  unsigned long workbench = 0;
+  uberzahl retval;
+
+  // constraint that left side !< right side
+  if ( *this < number ) return retval;
+
+  // pad extra zeros onto the left of the smaller
+  while ( value_vector.size() != number.value_vector.size() )
+    if ( value_vector.size() > number.value_vector.size() )
+      number.value_vector.push_back(0);
+    else
+      value_vector.push_back(0);
+
+  // perform subtraction
+  for ( size_t i = 0; i < value_vector.size(); ++i ){
+    workbench = value_vector[i] - number.value_vector.size() - workbench;
+    retval.value_vector.push_back(workbench);
+    workbench = workbench >> maxBits;
+    if ( workbench ) workbench = 1;
+  }
+
+  return retval;
+}
+
+const uberzahl& uberzahl::operator * ( const uberzahl& number ){
+}
+
+const uberzahl& uberzahl::operator / ( const uberzahl& number ){
+}
+
+const uberzahl& uberzahl::operator % ( const uberzahl& number ){
+  return this - ( this / number );
+}
+
+// convert the stored numeric_value into a string
+void uberzahl::convert_to_string ( void ){
 }
 
 // take the string_value and convert it into a numeric_value

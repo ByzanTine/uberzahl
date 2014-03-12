@@ -11,7 +11,7 @@ class uberzahl {
     uberzahl ( const char* );
     
     const uberzahl& operator = ( const char* ); 
-    const uberzahl& operator = ( const uberzahl& );
+    const uberzahl& operator = ( uberzahl& );
     
     friend std::ostream& operator << ( std::ostream&, uberzahl& );
 
@@ -19,9 +19,8 @@ class uberzahl {
     std::string string_value;
     std::vector<unsigned int> value_vector;
     void convert_to_numeric ( void );
-
-    // TO IMPLEMENT
     void convert_to_string ( void );
+
     // comparators
     bool operator > ( const uberzahl& );
     bool operator < ( const uberzahl& );
