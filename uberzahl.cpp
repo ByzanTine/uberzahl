@@ -17,6 +17,11 @@ uberzahl::uberzahl ( const char* number ){
   convert_to_numeric();
 }
 
+uberzahl::uberzahl ( const uberzahl& number ){
+  string_value = number.string_value;
+  convert_to_numeric();
+}
+
 uberzahl::~uberzahl ( void )
 { ;;; }
 
@@ -26,14 +31,17 @@ const uberzahl& uberzahl::operator = ( const char* number ){
 }
 
 const uberzahl& uberzahl::operator = ( uberzahl& number ){
+  if ( this == &number ) return *this;
+
   number.convert_to_string();
   string_value = number.string_value;
   convert_to_numeric();
 }
 
-const uberzahl& uberzahl::operator + ( const uberzahl& number ){
-  unsigned long workbench;
-  uberzahl retval;
+uberzahl uberzahl::operator + ( uberzahl number ){
+  unsigned long workbench = 0;
+  uberzahl retval = "0";
+  retval.value_vector.clear();
 
   // pad extra zeros onto the left of the smaller
   while ( value_vector.size() != number.value_vector.size() )
@@ -54,9 +62,10 @@ const uberzahl& uberzahl::operator + ( const uberzahl& number ){
   return retval;
 }
 
-const uberzahl& uberzahl::operator - ( const uberzahl& number ){
+uberzahl uberzahl::operator - ( uberzahl number ){
   unsigned long workbench = 0;
-  uberzahl retval;
+  uberzahl retval = "0";
+  retval.value_vector.clear();
 
   // constraint that left side !< right side
   if ( *this < number ) return retval;
@@ -70,7 +79,7 @@ const uberzahl& uberzahl::operator - ( const uberzahl& number ){
 
   // perform subtraction
   for ( size_t i = 0; i < value_vector.size(); ++i ){
-    workbench = value_vector[i] - number.value_vector.size() - workbench;
+    workbench = value_vector[i] - number.value_vector[i] - workbench;
     retval.value_vector.push_back(workbench);
     workbench = workbench >> maxBits;
     if ( workbench ) workbench = 1;
@@ -79,13 +88,39 @@ const uberzahl& uberzahl::operator - ( const uberzahl& number ){
   return retval;
 }
 
-const uberzahl& uberzahl::operator * ( const uberzahl& number ){
+uberzahl uberzahl::operator * ( uberzahl number ){
+  size_t n = value_vector.size() - 1;
+  size_t t = number.value_vector.size() - 1;
+  uberzahl retval = "0";
+  retval.value_vector.clear();
+  
+  unsigned int carry = 0;
+  unsigned long workbench = 0;
+  
+  // this assumes your uberzahls dont use up your entire hard
+  // drive of space to store a number... I feel it is a fair
+  // assumption.
+  for ( size_t i = 0; i <= n + t + 1; ++i )
+    retval.value_vector.push_back(0);
+  for ( size_t i = 0; i <= t; ++i ){
+    carry = 0;
+    for ( size_t j = 0; j <= n; ++ j ){
+      workbench = retval.value_vector[i+j] + value_vector[j]*number.value_vector[i] + carry;
+      retval.value_vector[i+j] = workbench;
+      carry = workbench >> maxBits;
+    }
+  }
+
+  retval.value_vector[n+t+1] = carry;
+  return retval;
 }
 
-const uberzahl& uberzahl::operator / ( const uberzahl& number ){
+uberzahl uberzahl::operator / ( uberzahl number ){
+  return *this;
 }
 
-const uberzahl& uberzahl::operator % ( const uberzahl& number ){
+
+uberzahl uberzahl::operator % ( uberzahl number ){
   return *this - ( *this / number );
 }
 
@@ -141,7 +176,7 @@ void uberzahl::convert_to_numeric ( void ){
 // prints the string and the associated vector
 // [string]
 // [low order] [higher order] [higher order] ... [highest order]
-std::ostream& operator << ( std::ostream& ost, uberzahl& number ){
+std::ostream& operator << ( std::ostream& ost, uberzahl number ){
   ost << number.string_value << std::endl;
   for ( std::vector<unsigned int>::iterator it = number.value_vector.begin();
       it != number.value_vector.end(); ++it )
@@ -160,7 +195,7 @@ std::ostream& operator << ( std::ostream& ost, uberzahl& number ){
 /* returns FALSE if the two uberzahl numbers are not equal;
  * else returns TRUE
  */ 
-bool uberzahl::operator== (const uberzahl& rhs) {
+bool uberzahl::operator== (const uberzahl rhs) {
 	/* if two of these UberZahl numbers are equal, that means that each element of the vector is equal */
 	
 	// if the string forms of a and b are different lengths, they can't be equal
@@ -186,7 +221,7 @@ bool uberzahl::operator== (const uberzahl& rhs) {
 /* returns FALSE if the uberzahl number being passed in is larger;
  * else returns TRUE
  */
-bool uberzahl::operator<= (const uberzahl& rhs) {
+bool uberzahl::operator<= (const uberzahl rhs) {
 	
 	unsigned long len_lhs = this->string_value.length(); 
 	unsigned long len_rhs = rhs.string_value.length(); 
@@ -201,6 +236,10 @@ bool uberzahl::operator<= (const uberzahl& rhs) {
 	}	
 
 	return true; 
+}
+
+bool uberzahl::operator < ( const uberzahl rhs ) {
+  return !( *this == rhs ) && ( *this <= rhs );
 }
 
 

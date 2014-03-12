@@ -9,11 +9,19 @@ class uberzahl {
     uberzahl ( void );
     ~uberzahl ( void );
     uberzahl ( const char* );
+    uberzahl ( const uberzahl& );
     
     const uberzahl& operator = ( const char* ); 
     const uberzahl& operator = ( uberzahl& );
     
-    friend std::ostream& operator << ( std::ostream&, uberzahl& );
+    friend std::ostream& operator << ( std::ostream&, uberzahl );
+    
+    // arithmetic
+    uberzahl operator + ( uberzahl );
+    uberzahl operator - ( uberzahl );
+    uberzahl operator * ( uberzahl );
+    uberzahl operator / ( uberzahl );
+    uberzahl operator % ( uberzahl );
 
   private:
     std::string string_value;
@@ -22,21 +30,15 @@ class uberzahl {
     void convert_to_string ( void );
 
     // comparators
-    bool operator > ( const uberzahl& );
-    bool operator < ( const uberzahl& );
-    bool operator >= ( const uberzahl& );
-    bool operator <= ( const uberzahl& );
-    bool operator == ( const uberzahl& );
-    // arithmetic
-    const uberzahl& operator + ( const uberzahl& );
-    const uberzahl& operator - ( const uberzahl& );
-    const uberzahl& operator * ( const uberzahl& );
-    const uberzahl& operator / ( const uberzahl& );
-    const uberzahl& operator % ( const uberzahl& );
+    bool operator > ( const uberzahl );
+    bool operator < ( const uberzahl );
+    bool operator >= ( const uberzahl );
+    bool operator <= ( const uberzahl );
+    bool operator == ( const uberzahl );
     // bitwize operators
-    const uberzahl& operator | ( const uberzahl& );
-    const uberzahl& operator & ( const uberzahl& );
-    const uberzahl& operator ^ ( const uberzahl& );
+    uberzahl operator | ( uberzahl );
+    uberzahl operator & ( uberzahl );
+    uberzahl operator ^ ( uberzahl );
 };
 
 #endif
