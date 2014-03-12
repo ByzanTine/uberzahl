@@ -3,9 +3,9 @@ using namespace std;
 #include "uberzahl.h"
 
 int main( void ){
-  uberzahl a = "9";
+  unsigned int x = -2;
+  uberzahl a = x;
   uberzahl b = "5";
-  cout << a;
-  cout << b;
-  cout << a * b;
+  cout << (a + 1);
+  cout << (a + 1) * 2;
 }

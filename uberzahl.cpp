@@ -12,6 +12,14 @@ uberzahl::uberzahl ( void )
   convert_to_numeric();
 }
 
+uberzahl::uberzahl ( unsigned long long number ){
+  value_vector.push_back(number);
+  while ( number != 0 ){
+    number = number >> maxBits;
+    value_vector.push_back(number);
+  }
+}
+
 uberzahl::uberzahl ( const char* number ){
   string_value = number;
   convert_to_numeric();
@@ -47,7 +55,7 @@ uberzahl uberzahl::operator + ( uberzahl number ){
 
   // perform addition operation
   for ( size_t i = 0; i < value_vector.size(); ++i ){
-    workbench = value_vector[i] + number.value_vector[i] + workbench;
+    workbench = workbench + value_vector[i] + number.value_vector[i];
     retval.value_vector.push_back(workbench);
     workbench = workbench >> maxBits;
   }
@@ -74,7 +82,7 @@ uberzahl uberzahl::operator - ( uberzahl number ){
 
   // perform subtraction
   for ( size_t i = 0; i < value_vector.size(); ++i ){
-    workbench = value_vector[i] - number.value_vector[i] - workbench;
+    workbench = -workbench + value_vector[i] - number.value_vector[i];
     retval.value_vector.push_back(workbench);
     workbench = workbench >> maxBits;
     if ( workbench ) workbench = 1;
@@ -100,7 +108,7 @@ uberzahl uberzahl::operator * ( uberzahl number ){
   for ( size_t i = 0; i <= t; ++i ){
     carry = 0;
     for ( size_t j = 0; j <= n; ++ j ){
-      workbench = retval.value_vector[i+j] + value_vector[j]*number.value_vector[i] + carry;
+      workbench = retval.value_vector[i+j] + ((unsigned long) value_vector[j])*number.value_vector[i] + carry;
       retval.value_vector[i+j] = workbench;
       carry = workbench >> maxBits;
     }
@@ -191,7 +199,7 @@ std::ostream& operator << ( std::ostream& ost, uberzahl number ){
 /* returns FALSE if the two uberzahl numbers are not equal;
  * else returns TRUE
  */ 
-bool uberzahl::operator== (const uberzahl rhs) {
+bool uberzahl::operator == (const uberzahl rhs) {
 	/* if two of these UberZahl numbers are equal, that means that each element of the vector is equal */
 	
 	// if the string forms of a and b are different lengths, they can't be equal
@@ -217,7 +225,7 @@ bool uberzahl::operator== (const uberzahl rhs) {
 /* returns FALSE if the uberzahl number being passed in is larger;
  * else returns TRUE
  */
-bool uberzahl::operator<= (const uberzahl rhs) {
+bool uberzahl::operator <= (const uberzahl rhs) {
 	
 	unsigned long len_lhs = this->string_value.length(); 
 	unsigned long len_rhs = rhs.string_value.length(); 

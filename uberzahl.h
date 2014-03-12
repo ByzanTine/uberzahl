@@ -9,6 +9,7 @@ class uberzahl {
     uberzahl ( void );
     ~uberzahl ( void );
     uberzahl ( const char* );
+    uberzahl ( unsigned long long );
     uberzahl ( const uberzahl& );
     const uberzahl& operator = ( uberzahl );
     
