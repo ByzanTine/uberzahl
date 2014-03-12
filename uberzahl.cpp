@@ -248,7 +248,7 @@ bool uberzahl::operator >= ( const uberzahl rhs ){
 }
 
 bool uberzahl::operator > ( const uberzahl rhs ){
-  return !( *this >= rhs );
+  return !( *this <= rhs );
 }
 
 bool uberzahl::operator != ( const uberzahl rhs ){

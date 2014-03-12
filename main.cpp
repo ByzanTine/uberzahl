@@ -32,7 +32,14 @@ int main( void ){
 
   uberzahl j = "1239808213902318901089231283901238904392834982374"; 
   uberzahl k = "42949672964294967296"; 
-  cout << k; 
+  uberzahl l = "1239808213902318901089231283901238904392834982373";
+  if (k <= j) cout << "k <= j" << endl;  
+  if (j > k) cout << "j > k" << endl;
+  if (k < j) cout << "k < j" << endl;
+  if (l < j) cout << "l < j" << endl;
+  if (l < l) cout << "l < l" << endl; 
 
+  cout << j; 
+  cout << k;
 }
 
