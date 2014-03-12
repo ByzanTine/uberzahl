@@ -112,7 +112,7 @@ bool uberzahl::operator== (const uberzahl& rhs) {
 
 	// compare from highest order "byte" to lowest order "byte" 
 	for (size_t i = rhs.value_vector.size(); i > 0; --i) {
-		if (this->value_vector.at(i) != rhs.value_vector.at(i)) {
+		if (this->value_vector.at(i-1) != rhs.value_vector.at(i-1)) {
 			return false; 
 		}
 	}
@@ -132,7 +132,7 @@ bool uberzahl::operator<= (const uberzahl& rhs) {
 	}
 	
 	for (size_t i = rhs.value_vector.size(); i > 0; --i) {
-		if (this->value_vector.at(i) > rhs.value_vector.at(i)) {
+		if (this->value_vector.at(i-1) > rhs.value_vector.at(i-1)) {
 			return false; 
 		}
 	}	
