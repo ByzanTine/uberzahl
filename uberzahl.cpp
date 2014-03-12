@@ -30,7 +30,7 @@ const uberzahl& uberzahl::operator = ( const char* number ){
   convert_to_numeric();
 }
 
-const uberzahl& uberzahl::operator = ( uberzahl& number ){
+const uberzahl& uberzahl::operator = ( uberzahl number ){
   if ( this == &number ) return *this;
 
   number.convert_to_string();
@@ -116,7 +116,44 @@ uberzahl uberzahl::operator * ( uberzahl number ){
 }
 
 uberzahl uberzahl::operator / ( uberzahl number ){
-  return *this;
+  uberzahl x = *this;
+  uberzahl y = number;
+  uberzahl q = "0";
+  uberzahl b = "1";
+  unsigned long workbench = 0;
+  q.value_vector.clear();
+
+  // get rid of high order 0's
+  while ( x.value_vector.size() > 1 && !x.value_vector.back() )
+    x.value_vector.pop_back();
+  while ( y.value_vector.size() > 1 && !y.value_vector.back() )
+    y.value_vector.pop_back();
+
+  size_t n = x.value_vector.size() - 1;
+  size_t t = y.value_vector.size() - 1;
+  for ( size_t i=0; i <= n-t; ++i ){
+    q.value_vector.push_back(0);
+    if ( i > 0 ) 
+      ;
+//      b.value_vector.push_front(0);
+  }
+
+  while ( x >= y*b ){
+    q.value_vector[n-t]++;
+    x = x - (y*b);
+  }
+
+  for ( size_t i=n; i > t; --i ){
+    if ( x.value_vector[i] = y.value_vector[t] )
+      q.value_vector[i-t-1] = -1;
+    else{
+      unsigned int bit = -1;
+      workbench = ( x.value_vector[i] * (bit+1) + x.value_vector[i-1] ) / y.value_vector[t];
+      q.value_vector[i-t-1] = workbench;
+    }
+
+    // wow this is boring ... 
+  }
 }
 
 
@@ -238,8 +275,18 @@ bool uberzahl::operator<= (const uberzahl rhs) {
 	return true; 
 }
 
-bool uberzahl::operator < ( const uberzahl rhs ) {
+bool uberzahl::operator < ( const uberzahl rhs ){
   return !( *this == rhs ) && ( *this <= rhs );
 }
 
+bool uberzahl::operator >= ( const uberzahl rhs ){
+  return !( *this < rhs );
+}
 
+bool uberzahl::operator > ( const uberzahl rhs ){
+  return !( *this >= rhs );
+}
+
+bool uberzahl::operator != ( const uberzahl rhs ){
+  return !( *this == rhs );
+}
