@@ -196,48 +196,32 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   assert( y != "0" ); // y can not be 0 in our division algorithm
   if ( x < y ) return q; // return 0 since y > x
 
-  while ( x.value_vector.size() > 1 && x.value_vector.back() == 0 )
-    x.value_vector.pop_back();
-  while ( y.value_vector.size() > 1 && y.value_vector.back() == 0 )
-    y.value_vector.pop_back();
+  x.clean_bits();
+  x.value_vector.push_back(0);
+  y.clean_bits();
 
   size_t n = x.value_vector.size() - 1;
   size_t t = y.value_vector.size() - 1;
 
   // step 1 -- initialize q to the correct size
-  for ( size_t i = 0; i < n - t; ++i )
+  for ( size_t i = 0; i < n - t - 1; ++i )
     q.value_vector.push_back(0);
 
-  // step 2 -- while our most significant digit of x is large enough, subtract off that copy of y
-  while ( x >= ( y << (maxBits*(n-t)) ) ){
-    q.value_vector[n-t] = q.value_vector[n-t] + 1;
-    x = x - ( y << (maxBits*(n-t)) );
-  }
-  
-  // step 3 -- the annoying part
+  // step 2 -- begin long division on first 2^16-digit
   for ( size_t i=n; i > t; --i ){
+    x.value_vector.push_back(0);
     largeType workbench = x.value_vector[i];
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-1];
-
-    if ( x.value_vector[i] == y.value_vector[t] )
-      q.value_vector[i-t-1] = -1;
-    else
-      q.value_vector[i-t-1] = workbench / y.value_vector[t];
-
-    workbench = workbench << maxBits;
-    workbench = workbench + x.value_vector[i-2];
-    largeType workbench2 = y.value_vector[t];
-    workbench2 = workbench2 << maxBits;
-    workbench2 = workbench2 + y.value_vector[t-1];
-
-    while ( q.value_vector[i-t-1]*workbench2 > workbench )
-      q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
-
-    if ( x < (y << (maxBits*(i-t-1))) * q.value_vector[i-t-1] )
-      q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
+    // workbench = x[i]B + x[i-1]
     
-    x = x - ((y << (maxBits*(i-t-1))) * q.value_vector[i-t-1]);
+    q.value_vector[i-t-1] = workbench / y.value_vector[t];
+    if ( x < (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1] )
+      q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
+    std::cout << "original : " << x << std::endl;
+    std::cout << "removing : " << q.value_vector[i-t-1] << std::endl;
+    x = x - (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1];
+    std::cout << "final : " << x << std::endl;
   }
   
   q.clean_bits();
@@ -349,7 +333,7 @@ void uberzahl::convert_to_numeric ( void ){
 // [string]
 // [low order] [higher order] [higher order] ... [highest order]
 std::ostream& operator << ( std::ostream& ost, const uberzahl& number ){
-  ost << "string : " << number.convert_to_string() << std::endl << "base-256 : ";
+  ost << "string : " << number.convert_to_string() << std::endl << "base-2**16 : ";
   for ( size_t i = 0; i < number.value_vector.size(); ++ i )
     ost << number.value_vector[i] << ' ';
   ost << std::endl;

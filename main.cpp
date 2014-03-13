@@ -6,7 +6,7 @@ using namespace std;
 int main( void ){
   srand(time(0));
   unsigned int a = -1;
-  uberzahl x = "100000000000000000000000000000000000000000000000000";
+  uberzahl x = "1000000000000000000000000000";
   uberzahl y = 6;
   cout << x << endl;
   cout << y << endl;
