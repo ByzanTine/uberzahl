@@ -3,6 +3,7 @@
 #include<iostream>
 #include<string>
 #include<vector>
+//#include<gmpxx.h>
 
 #define smallType unsigned int
 #define mediumType unsigned long long
@@ -15,10 +16,11 @@ class uberzahl {
     uberzahl ( const char* );
     uberzahl ( largeType );
     uberzahl ( const uberzahl& );
+//    uberzahl( const mpz_class& );
     const uberzahl& operator = ( const uberzahl& );
-    
+
     friend std::ostream& operator << ( std::ostream&, const uberzahl& );
-    
+
     // arithmetic - not true pass by references :(
     uberzahl operator + ( const uberzahl& ) const;
     uberzahl operator - ( const uberzahl& ) const;
@@ -27,15 +29,16 @@ class uberzahl {
     uberzahl operator / ( smallType ) const;
     uberzahl operator % ( const uberzahl& ) const;
     smallType operator % ( smallType ) const;
-    
+
     // comparators
     bool operator > ( const uberzahl& ) const;
     bool operator < ( const uberzahl& ) const;
     bool operator >= ( const uberzahl& ) const;
     bool operator <= ( const uberzahl& ) const;
     bool operator == ( const uberzahl& ) const;
+//    bool operator == ( const mpz_class& ) const;
     bool operator != ( const uberzahl& ) const;
-    
+
     // bitwize operators
     uberzahl operator | ( const uberzahl& ) const;
     uberzahl operator & ( const uberzahl& ) const;
@@ -59,5 +62,7 @@ class uberzahl {
     void clean_bits ( void );
     std::pair<std::pair<uberzahl,uberzahl>,bool> inverse ( const uberzahl&, const uberzahl& ) const;
 };
+
+
 
 #endif

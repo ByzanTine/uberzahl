@@ -2,54 +2,89 @@
 #include <cstdlib>
 using namespace std;
 #include "uberzahl.h"
+#include <gmpxx.h>
+#include <cassert>
 
-int main( void ){
-  srand(time(0));
-  unsigned long long a = -1;
-  a >>= 16;
-  uberzahl x = a;
-  uberzahl y = a;
+#define asize 56
+#define bsize 50
 
-  cout << x / y << endl;
-//  uberzahl y = "4";
-  
-  /*unsigned int x = -2;
-  uberzahl a = x;
-  uberzahl b = "5";
-  cout << (a + 1);
-  cout << (a + 1) * 2;
+mpz_class generateNumber(int bits,bool lead1) {
+	mpz_class r = lead1?1:rand()%2;
+	for(int b=1;b<bits;b++) {
+		r*=2;
+		if(rand()%2)
+			r++;
+	}
+	if(r==0)
+		return generateNumber(bits,lead1);
+	return r;
+}
 
-  uberzahl c = "1234";
-  uberzahl d = "5678";
-  uberzahl e = "123456789123456789";
-  uberzahl f = "123456789123456789"; 
 
-  if (c == d) cout << "c == d" << endl; //won't print
-  if (e == f) cout << "e == f" << endl; //will print
-  if (c < d) cout << "c < d" << endl; //will print
-  if (c <= d) cout << "c <= d" << endl; //will print
-  if (e > c) cout << "e > c" << endl; //will print
-  if (f >= e) cout << "f >= e" << endl; //will print
-  if (d >= f) cout << "d >= f" << endl; //won't print
+int main( void ){ 
+	mpz_class scale= 1;
+	for(int i=0;i<32;i++)
+		scale*=2;
 
-  uberzahl g = "0000000000000000000000000000000000000000123456";
-  uberzahl h = "123456"; 
-  uberzahl i = "123457"; 
-
-  if (g == h) cout << "g == h" << endl; //will print
-  if (g >= h) cout << "g >= h" << endl; //will print
-  if (i >= g) cout << "i >= g" << endl; //will print
-
-  uberzahl j = "1239808213902318901089231283901238904392834982374"; 
-  uberzahl k = "42949672964294967296"; 
-  uberzahl l = "1239808213902318901089231283901238904392834982373";
-  if (k <= j) cout << "k <= j" << endl;  
-  if (j > k) cout << "j > k" << endl;
-  if (k < j) cout << "k < j" << endl;
-  if (l < j) cout << "l < j" << endl;
-  if (l < l) cout << "l < l" << endl; 
-
-  cout << j; 
-  cout << k;*/
+	srand(time(0));
+	for(int i=0;i<10000;i++) {
+		mpz_class a = generateNumber(asize,false);
+		mpz_class b = generateNumber(bsize,false);
+//		a=597,b=265
+		unsigned int c = rand();
+		unsigned int d = c%(asize*11/10);
+		cout << a << " " << b << " " << c << " " << d << endl;
+		uberzahl ua = a,ub = b;
+		assert(ua==a);
+		assert((ua==b)==(a==b));
+		assert(ua+ub==a+b);
+		if(a>b)
+			assert(ua-ub==a-b);
+		else
+			assert(ub-ua==b-a );
+		cout << ua*ub << endl << a*b << endl;
+		assert(ua*ub==a*b);
+		assert(ua/ub==a/b);
+		assert(ua/ua==a/a);
+		assert(ua/c == a/c);
+		assert(ub%ua == b%a);
+		assert(ub%c == b%c);
+		assert((a<b)==(ua<ub));
+		assert((b<a)==(ub<ua));
+		assert((a<a)==(ua<ua));
+		assert((a>b)==(ua>ub));
+		assert((b>a)==(ub>ua));
+		assert((a>a)==(ua>ua));
+		assert((a<=b)==(ua<=ub));
+		assert((b<=a)==(ub<=ua));
+		assert((a<=a)==(ua<=ua));
+		assert((a>=b)==(ua>=ub));
+		assert((b>=a)==(ub>=ua));
+		assert((a>=a)==(ua>=ua));
+		assert((a==b)==(ua==ub));
+		assert((a==a)==(ua==ua));
+		assert((a!=b)==(ua!=ub));
+		assert((a!=a)==(ua!=ua));
+		mpz_class shift = 1;
+		for(int j=0;j<d;j++)
+			shift*=2;
+		assert(ua<<d==a*shift);
+		assert(ua>>d==a/shift);
+		mpz_class r;
+		mpz_gcd(r.get_mpz_t(),a.get_mpz_t(),b.get_mpz_t());
+		if(r==1 && b>1)
+			assert((ua*ua.inverse(ub))%ub=="1");
+		else if(b>1)
+			assert(ua.inverse(ub)=="0");
+		uberzahl one = "1";
+//		cout << (one<<d) << " " << (ua^(one<<d)) << " " << ua.bit(d) << endl;
+		assert((ua>(ua^(one<<d)))==ua.bit(d));
+		int length = ua.bitLength();
+		assert(ua=="0" || (one<<length>ua && one<<(length-1)<=ua));
+		if(i%100==0)
+			cout << i/100 << "%" << endl;
+	}
+	cout << "passed!" << endl;
+	
 }
 
