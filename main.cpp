@@ -5,14 +5,10 @@ using namespace std;
 
 int main( void ){
   srand(time(0));
-  uberzahl x = 1;
-  cout << x << " : " << x.bitLength() << endl;
-  x = 3;
-  cout << x << " : " << x.bitLength() << endl;
-  x = 1023;
-  cout << x << " : " << x.bitLength() << endl;
-  x = 1025;
-  cout << x << " : " << x.bitLength() << endl;
+  unsigned long long a = 100;
+  uberzahl y = a;
+
+  cout << y.exp(y) << endl;
 //  uberzahl y = "4";
   
   /*unsigned int x = -2;

@@ -574,3 +574,16 @@ smallType uberzahl::bitLength ( void ) const
   }
   return 0;
 }
+
+uberzahl uberzahl::exp ( const uberzahl& exponent ) const
+{
+  if ( exponent == "0" ) // exponent of 0
+    return "1";
+  else if ( exponent == "1" ) // exponent of 1
+    return *this;
+
+  if ( (exponent % "2") == "1" ) // odd exponent
+    return (this->exp(exponent-1)) * (*this);
+  else // even exponent
+    return (this->exp(exponent/2)) * (this->exp(exponent/2));
+}
