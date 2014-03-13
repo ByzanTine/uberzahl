@@ -20,7 +20,9 @@ class uberzahl {
     uberzahl operator - ( const uberzahl& ) const;
     uberzahl operator * ( const uberzahl& ) const;
     uberzahl operator / ( const uberzahl& ) const; // Alex Check
+    uberzahl operator / ( unsigned int ) const;
     uberzahl operator % ( const uberzahl& ) const;
+    unsigned int operator % ( unsigned int ) const;
     
     // comparators
     bool operator > ( const uberzahl& ) const;
@@ -47,7 +49,7 @@ class uberzahl {
     std::string string_value;
     std::vector<unsigned int> value_vector;
     void convert_to_numeric ( void );
-    void convert_to_string ( void ); // Emily do this too
+    std::string convert_to_string ( void ) const; // Emily do this too
     void clean_bits ( void );
 };
 

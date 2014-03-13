@@ -40,6 +40,7 @@ const uberzahl& uberzahl::operator = ( const uberzahl& number )
 {
   if ( this == &number ) return *this;
   string_value = number.string_value;
+  value_vector.clear();
   for ( size_t i=0; i < number.value_vector.size(); ++i )
     value_vector.push_back( number.value_vector[i] );
   clean_bits();
@@ -253,9 +254,63 @@ uberzahl uberzahl::operator % ( const uberzahl& number ) const
   return retval;
 }
 
+uberzahl uberzahl::operator / (unsigned int divisor) const
+{
+	uberzahl retval = *this;
+	unsigned long long current = 0;
+	for(int i=value_vector.size()-1;i>=0;i--) {
+		current <<= maxBits;
+		current+=value_vector[i];
+		retval.value_vector[i] = current/divisor;
+		current %=divisor;
+	}
+	retval.clean_bits();
+	return retval;
+}
+
+unsigned int uberzahl::operator % (unsigned int modulus) const
+{
+	unsigned long long retval = 0;
+	unsigned long long coefficient = 1;
+	for(int i=0;i<value_vector.size();i++) {
+		retval+=coefficient*value_vector[i];
+		retval%=modulus;
+		coefficient<<=maxBits;
+		coefficient%=modulus;
+	}
+	return retval;
+}
+
 // convert the stored numeric_value into a string
 // TODO - implement this
-void uberzahl::convert_to_string ( void ){
+std::string uberzahl::convert_to_string ( void ) const
+{
+	if(this == 0) {
+		return "0";
+	}
+	uberzahl temp = *this;
+	std::string reversed = "";
+	uberzahl zero = 0ULL;
+	while(temp>zero) {
+		reversed+=temp%10+'0';
+//		std::cout << reversed << std::endl;
+//		int asdf2;std::cin>>asdf2;
+		temp=temp/10;
+/*
+  uberzahl asdf = temp;
+  for ( size_t j = 0; j < asdf.value_vector.size(); ++ j )
+    std::cout << asdf.value_vector[j] << ' ';
+  std::cout << std::endl;
+	int asdf2;
+	std::cin >> asdf2;
+*/
+
+
+	}
+	std::string retval = "";
+	for(int i=reversed.size()-1;i>=0;i--)
+		retval+=reversed[i];
+	return retval;
 }
 
 // take the string_value and convert it into a numeric_value
@@ -307,7 +362,7 @@ void uberzahl::convert_to_numeric ( void ){
 // [string]
 // [low order] [higher order] [higher order] ... [highest order]
 std::ostream& operator << ( std::ostream& ost, const uberzahl& number ){
-  ost << "string : " << number.string_value << std::endl << "base-256 : ";
+  ost << "string : " << number.convert_to_string() << std::endl << "base-256 : ";
   for ( size_t i = 0; i < number.value_vector.size(); ++ i )
     ost << number.value_vector[i] << ' ';
   ost << std::endl;

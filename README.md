@@ -12,7 +12,7 @@ The main purpose of this library is to give an unoptimized version
 of the traditional modular operation for use at the University of Michigan
 in EECS 475.
 
-This code was written by Alexander James and Sai Gouravajhala
+This code was written by Alexander James, Emily Graetz, and Sai Gouravajhala
 beginning 03/10/14
 
 If you notice any glaring mistakes please contact the authors to
