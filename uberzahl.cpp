@@ -190,7 +190,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   uberzahl q = "0";
 
   assert( y != "0" ); // y can not be 0 in our division algorithm
-  if ( x > y ) return q; // return 0 since y > x
+  if ( x < y ) return q; // return 0 since y > x
 
   while ( x.value_vector.size() > 1 && x.value_vector.back() == 0 )
     x.value_vector.pop_back();
@@ -211,6 +211,8 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     x = x - ( y << (maxBits*(n-t)) );
   }
 
+  std::cout << "here" << std::endl;
+  
   // step 3 -- the annoying part
   for ( size_t i=n; i > t; --i ){
 
@@ -239,6 +241,8 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     else
       x = x - ((y << (maxBits*(i-t-1))) * quot);
   }
+  
+  std::cout << "here" << std::endl;
 
   q.clean_bits();
   return q;
@@ -328,7 +332,7 @@ bool uberzahl::operator <= (const uberzahl& rhs) const
     if ( value_vector[i] > 0 )
       return false;
 
-  for ( size_t i=rhs_size; i > 0; ++i )
+  for ( size_t i=rhs_size; i > 0; --i )
     if ( value_vector[i-1] > rhs.value_vector[i-1] )
       return false;
 
@@ -346,7 +350,7 @@ bool uberzahl::operator >= (const uberzahl& rhs) const
     if ( value_vector[i] > 0 )
       return true;
 
-  for ( size_t i=rhs_size; i > 0; ++i )
+  for ( size_t i=rhs_size; i > 0; --i )
     if ( value_vector[i-1] < rhs.value_vector[i-1] )
       return false;
 
