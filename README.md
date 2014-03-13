@@ -4,6 +4,8 @@ Herzlich willkomen auf der Uber Zahl!
 
 Compiling : g++ filename.cpp uberzahl.cpp -o outputfile
 
+Check uberzahl.h for public functionality of the uberzahl class
+
 Currently there is no way to generate primes with uberzahl
 however you can uncomment the mpz class functions and generate
 a prime with mpz.
