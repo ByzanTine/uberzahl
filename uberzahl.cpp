@@ -564,7 +564,7 @@ smallType uberzahl::bitLength ( void ) const
     if(value_vector[i]!=0) {
       largeType k=1;
       int j=0;
-      while(k<value_vector[i]) {
+      while(k<=value_vector[i]) {
         //		std::cout << j << " " << k << std::endl;
         k = k<<1;
         j++;
