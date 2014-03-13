@@ -358,6 +358,8 @@ bool uberzahl::operator <= (const uberzahl& rhs) const
   for ( size_t i=rhs_size; i > 0; --i )
     if ( value_vector[i-1] > rhs.value_vector[i-1] )
       return false;
+    else if ( value_vector[i-1] < rhs.value_vector[i-1] )
+      return true;
 
   return true; 
 }
@@ -376,6 +378,8 @@ bool uberzahl::operator >= (const uberzahl& rhs) const
   for ( size_t i=rhs_size; i > 0; --i )
     if ( value_vector[i-1] < rhs.value_vector[i-1] )
       return false;
+    else if ( value_vector[i-1] > rhs.value_vector[i-1] )
+      return true;
 
   return true; 
 }
@@ -453,7 +457,7 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   return retval;
 }
 
-uberzahl uberzahl::random ( largeType bits ){
+uberzahl uberzahl::random ( mediumType bits ){
   assert( bits > 0 );
   value_vector.clear();
 
@@ -473,4 +477,16 @@ uberzahl uberzahl::random ( largeType bits ){
   }
 
   return *this;
+}
+
+smallType uberzahl::bit ( mediumType n ) const
+{
+  mediumType largeBit = n / maxBits;
+  smallType smallBit = n % maxBits;
+
+  if ( largeBit > value_vector.size() )
+    return 0;
+
+  smallType bits = value_vector[largeBit];
+  return ( bits | ( 1 << smallBit ) );
 }

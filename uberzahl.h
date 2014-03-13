@@ -44,10 +44,10 @@ class uberzahl {
     uberzahl operator << ( smallType ) const;
 
     // TODO inverses
-    // TODO nth bit
+    smallType bit ( mediumType ) const;
 
     // uses the rand function - to seed use srand (unsigned int seed);
-    uberzahl random ( largeType );
+    uberzahl random ( mediumType );
 
   private:
     std::string string_value;
