@@ -213,9 +213,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   
   // step 3 -- the annoying part
   for ( size_t i=n; i > t; --i ){
-
     unsigned long long workbench = x.value_vector[i];
-    std::cout << sizeof(unsigned long long) << " : " << sizeof(unsigned long) << " : " << sizeof(unsigned int) << std::endl;
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-1];
 
@@ -238,10 +236,10 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
       x = x - ((y << (maxBits*(i-t-1))) * ( quot - 1 ));
     else
       x = x - ((y << (maxBits*(i-t-1))) * quot);
+  
+    std::cout << "y is : " << y << std::endl;
   }
   
-  std::cout << "here" << std::endl;
-
   q.clean_bits();
   return q;
 }
@@ -282,35 +280,24 @@ unsigned int uberzahl::operator % (unsigned int modulus) const
 }
 
 // convert the stored numeric_value into a string
-// TODO - implement this
 std::string uberzahl::convert_to_string ( void ) const
 {
-	if(this == 0) {
+	if (*this == "0")
 		return "0";
-	}
-	uberzahl temp = *this;
+	
+  uberzahl temp = *this;
 	std::string reversed = "";
 	uberzahl zero = 0ULL;
 	while(temp>zero) {
 		reversed+=temp%10+'0';
-//		std::cout << reversed << std::endl;
-//		int asdf2;std::cin>>asdf2;
 		temp=temp/10;
-/*
-  uberzahl asdf = temp;
-  for ( size_t j = 0; j < asdf.value_vector.size(); ++ j )
-    std::cout << asdf.value_vector[j] << ' ';
-  std::cout << std::endl;
-	int asdf2;
-	std::cin >> asdf2;
-*/
-
-
 	}
+
 	std::string retval = "";
 	for(int i=reversed.size()-1;i>=0;i--)
 		retval+=reversed[i];
-	return retval;
+	
+  return retval;
 }
 
 // take the string_value and convert it into a numeric_value
@@ -494,11 +481,11 @@ uberzahl uberzahl::random ( unsigned int bits ){
 
   if ( shortbits ){
     value_vector[longbits] = value_vector[longbits] >> (maxBits - shortbits);
-    value_vector[longbits] = value_vector[longbits] | (1 << shortbits);
+    value_vector[longbits] = value_vector[longbits] | (1 << shortbits - 1);
   }
   else{
     value_vector.pop_back();
-    value_vector[longbits-1] = value_vector[longbits-1] | (1 << (maxBits-1));
+    value_vector[longbits-1] = value_vector[longbits-1] | (1 << (maxBits - 1));
   }
 
   return *this;

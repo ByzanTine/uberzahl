@@ -1,13 +1,18 @@
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 #include "uberzahl.h"
 
 int main( void ){
+  srand(time(0));
   unsigned int a = -1;
-  uberzahl x = "100";
-  uberzahl y = "50";
+  uberzahl x = "1000000000000000000000000";
+  uberzahl y;
+  y.random(3);
+  cout << x << endl;
+  cout << y << endl;
+  cout << ( x / y ) << endl;
 //  uberzahl y = "4";
-  cout << x << y << (x / y) << endl;
   
   /*unsigned int x = -2;
   uberzahl a = x;
