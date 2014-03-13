@@ -6,10 +6,9 @@ using namespace std;
 int main( void ){
   srand(time(0));
   unsigned int a = -1;
-  uberzahl x = "1000000000000000000000000";
+  uberzahl x = "1000000000";
   uberzahl y;
-  y.random(3);
-  cout << sizeof(unsigned short) << " " << sizeof(unsigned int) << " " << sizeof(unsigned long long) << endl;
+  y.random(123456);
   cout << x << endl;
   cout << y << endl;
   cout << ( x / y ) << endl;

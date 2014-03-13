@@ -47,7 +47,7 @@ class uberzahl {
     // inverses
 
     // uses the rand function - to seed use srand (unsigned int seed);
-    uberzahl random ( smallType );
+    uberzahl random ( largeType );
 
   private:
     std::string string_value;

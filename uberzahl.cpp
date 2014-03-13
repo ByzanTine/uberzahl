@@ -472,7 +472,7 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   return retval;
 }
 
-uberzahl uberzahl::random ( smallType bits ){
+uberzahl uberzahl::random ( largeType bits ){
   assert( bits > 0 );
   value_vector.clear();
 
