@@ -5,9 +5,9 @@
 #include<cstdlib>
 
 #include"uberzahl.h"
-#define maxBits (8 * sizeof(unsigned short))
-#define smallType unsigned short
-#define mediumType unsigned int
+#define maxBits (8 * sizeof(unsigned int))
+#define smallType unsigned int
+#define mediumType unsigned long long
 #define largeType unsigned long long
 
 uberzahl::uberzahl ( void )
@@ -328,16 +328,13 @@ void uberzahl::convert_to_numeric ( void ){
   value_vector.push_back(numeric_value);
 }
 
-// printing operator -- currently only for debug purposes
-// prints the string and the associated vector
-// [string]
-// [low order] [higher order] [higher order] ... [highest order]
 std::ostream& operator << ( std::ostream& ost, const uberzahl& number ){
-  ost << "string : " << number.convert_to_string() << std::endl << "base-2**16 : ";
+/*  ost << "string : " << number.convert_to_string() << std::endl << "base-2**" << maxBits << " : ";
   for ( size_t i = 0; i < number.value_vector.size(); ++ i )
     ost << number.value_vector[i] << ' ';
   ost << std::endl;
-
+*/
+  ost << number.convert_to_string();
   return ost;
 }
 

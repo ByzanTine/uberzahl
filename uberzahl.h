@@ -4,8 +4,8 @@
 #include<string>
 #include<vector>
 
-#define smallType unsigned short
-#define mediumType unsigned int
+#define smallType unsigned int
+#define mediumType unsigned long long
 #define largeType unsigned long long
 
 class uberzahl {

@@ -6,16 +6,9 @@ using namespace std;
 int main( void ){
   srand(time(0));
   unsigned int a = -1;
-  uberzahl x = a;
-  
-  cout << x << endl;
+  uberzahl x = "1000000000000000000000000000000000";
 
-  x = ( x << 1 );
-  x = ( x >> 1 );
-  x = ( x << 1 );
-  x = ( x >> 1 );
-
-  cout << x << endl;
+  cout << x / 6 << endl;
 //  uberzahl y = "4";
   
   /*unsigned int x = -2;
