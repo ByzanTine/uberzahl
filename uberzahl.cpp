@@ -201,7 +201,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 
   // step 2 -- begin long division on first 2^16-digit
   for ( size_t i=n; i > t; --i ){
-    if ( x.value_vector.size() > i+1 )
+    if ( x.value_vector.size() < i+1 )
       continue;
 
     largeType workbench = x.value_vector[i];

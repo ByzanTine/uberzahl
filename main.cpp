@@ -5,9 +5,10 @@ using namespace std;
 
 int main( void ){
   srand(time(0));
-  unsigned int a = -1;
-  uberzahl x = "13309209877";
-  uberzahl y = "6832565731";
+  unsigned long long a = -1;
+  a >>= 16;
+  uberzahl x = a;
+  uberzahl y = a;
 
   cout << x / y << endl;
 //  uberzahl y = "4";
