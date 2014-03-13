@@ -156,33 +156,25 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
   return retval;
 }
 
-uberzahl uberzahl::operator * ( const uberzahl& input ) const
+uberzahl uberzahl::operator * ( const uberzahl& y ) const
 {
-  uberzahl x = *this;
-  uberzahl y = input;
-  size_t n = x.value_vector.size() - 1;
+  size_t n = value_vector.size() - 1;
   size_t t = y.value_vector.size() - 1;
   uberzahl retval = "0";
   retval.value_vector.clear();
-
-  smallType carry = 0;
   mediumType workbench = 0;
 
-  // this assumes your uberzahls dont use up your entire hard
-  // drive of space to store a number... I feel it is a fair
-  // assumption.
   for ( size_t i = 0; i <= n + t + 1; ++i )
     retval.value_vector.push_back(0);
   for ( size_t i = 0; i <= t; ++i ){
-    carry = 0;
     for ( size_t j = 0; j <= n; ++ j ){
-      workbench = retval.value_vector[i+j] + ((mediumType) x.value_vector[j])*y.value_vector[i] + carry;
-      retval.value_vector[i+j] = workbench;
-      carry = workbench >> maxBits;
+      workbench = ((mediumType) value_vector[j])*y.value_vector[i];
+      retval.value_vector[i+j] += workbench;
+      workbench = workbench >> maxBits;
+      retval.value_vector[i+j+1] += workbench;
     }
   }
 
-  retval.value_vector[n+t+1] = carry;
   retval.clean_bits();
   return retval;
 }
@@ -218,10 +210,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     q.value_vector[i-t-1] = workbench / y.value_vector[t];
     if ( x < (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1] )
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
-    std::cout << "original : " << x << std::endl;
-    std::cout << "removing : " << q.value_vector[i-t-1] << std::endl;
     x = x - (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1];
-    std::cout << "final : " << x << std::endl;
   }
   
   q.clean_bits();
@@ -231,7 +220,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 
 uberzahl uberzahl::operator % ( const uberzahl& number ) const
 {
-  uberzahl retval = *this - ( *this / number );
+  uberzahl retval = *this - number*( *this / number );
   retval.clean_bits();
   return retval;
 }

@@ -6,9 +6,11 @@ using namespace std;
 int main( void ){
   srand(time(0));
   unsigned int a = -1;
-  uberzahl x = "1000000000000000000000000000000000";
+  uberzahl x = "33333333333333333333333333333333333333333333333333333333333333333333333333";
+  uberzahl y = 3;
 
-  cout << x / 6 << endl;
+  cout << x % y << endl;
+  cout << y*(x/y) << endl;
 //  uberzahl y = "4";
   
   /*unsigned int x = -2;
