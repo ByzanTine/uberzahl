@@ -88,7 +88,7 @@ uberzahl uberzahl::operator >> ( smallType shift ) const
 
   for ( size_t i=0; i < value_vector.size() - largeshift; ++i )
     retval.value_vector[i] = value_vector[i + largeshift] >> smallshift;
-  for ( size_t i=0; i < value_vector.size() - largeshift; ++i ){
+  for ( size_t i=0; i < value_vector.size() - largeshift - 1; ++i ){
     mediumType workspace = value_vector[i + largeshift + 1];
     workspace = workspace << ( maxBits - smallshift );
     retval.value_vector[i] += workspace;
