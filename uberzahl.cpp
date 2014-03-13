@@ -234,13 +234,10 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     while ( q.value_vector[i-t-1]*workbench2 > workbench )
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
 
-    smallType quot = q.value_vector[i-t-1];
-    if ( x < (y << (maxBits*(i-t-1))) * quot ){
-      x = x - ((y << (maxBits*(i-t-1))) * ( quot - 1 ));
+    if ( x < (y << (maxBits*(i-t-1))) * q.value_vector[i-t-1] )
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
-    }
-    else
-      x = x - ((y << (maxBits*(i-t-1))) * quot);
+    
+    x = x - ((y << (maxBits*(i-t-1))) * q.value_vector[i-t-1]);
   }
   
   q.clean_bits();
