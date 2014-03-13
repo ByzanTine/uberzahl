@@ -201,8 +201,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   size_t t = y.value_vector.size() - 1;
 
   // step 1 -- initialize q to the correct size
-  q.value_vector.pop_back();
-  for ( size_t i = 0; i <= n - t; ++i )
+  for ( size_t i = 0; i < n - t; ++i )
     q.value_vector.push_back(0);
 
   // step 2 -- while our most significant digit of x is large enough, subtract off that copy of y
@@ -210,8 +209,6 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     q.value_vector[n-t] = q.value_vector[n-t] + 1;
     x = x - ( y << (maxBits*(n-t)) );
   }
-
-  std::cout << "here" << std::endl;
   
   // step 3 -- the annoying part
   for ( size_t i=n; i > t; --i ){
