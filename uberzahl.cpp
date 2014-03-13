@@ -235,12 +235,12 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
 
     smallType quot = q.value_vector[i-t-1];
-    if ( x < (x - ((y << (maxBits*(i-t-1))) * quot) ) )
+    if ( x < (y << (maxBits*(i-t-1))) * quot ){
       x = x - ((y << (maxBits*(i-t-1))) * ( quot - 1 ));
+      q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
+    }
     else
       x = x - ((y << (maxBits*(i-t-1))) * quot);
-  
-    std::cout << "y is : " << y << std::endl;
   }
   
   q.clean_bits();
