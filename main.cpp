@@ -6,12 +6,11 @@ using namespace std;
 int main( void ){
   srand(time(0));
   unsigned int a = -1;
-  uberzahl x = "1000000000";
-  uberzahl y;
-  y.random(123456);
+  uberzahl x = "16666666666666666666666666";
+  uberzahl y = 6;
   cout << x << endl;
   cout << y << endl;
-  cout << ( x / y ) << endl;
+  cout << ( x * y ) << endl;
 //  uberzahl y = "4";
   
   /*unsigned int x = -2;

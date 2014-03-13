@@ -23,7 +23,7 @@ class uberzahl {
     uberzahl operator + ( const uberzahl& ) const;
     uberzahl operator - ( const uberzahl& ) const;
     uberzahl operator * ( const uberzahl& ) const;
-    uberzahl operator / ( const uberzahl& ) const; // Alex Check
+    uberzahl operator / ( const uberzahl& ) const; // TODO - find and fix the bug
     uberzahl operator / ( smallType ) const;
     uberzahl operator % ( const uberzahl& ) const;
     smallType operator % ( smallType ) const;
@@ -43,8 +43,8 @@ class uberzahl {
     uberzahl operator >> ( smallType ) const;
     uberzahl operator << ( smallType ) const;
 
-    // Emily Update
-    // inverses
+    // TODO inverses
+    // TODO nth bit
 
     // uses the rand function - to seed use srand (unsigned int seed);
     uberzahl random ( largeType );
@@ -53,7 +53,7 @@ class uberzahl {
     std::string string_value;
     std::vector<smallType> value_vector;
     void convert_to_numeric ( void );
-    std::string convert_to_string ( void ) const; // Emily do this too
+    std::string convert_to_string ( void ) const;
     void clean_bits ( void );
 };
 
