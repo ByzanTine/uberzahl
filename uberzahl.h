@@ -4,12 +4,16 @@
 #include<string>
 #include<vector>
 
+#define smallType unsigned short
+#define mediumType unsigned int
+#define largeType unsigned long long
+
 class uberzahl {
   public:
     uberzahl ( void );
     ~uberzahl ( void );
     uberzahl ( const char* );
-    uberzahl ( unsigned long long );
+    uberzahl ( largeType );
     uberzahl ( const uberzahl& );
     const uberzahl& operator = ( const uberzahl& );
     
@@ -20,9 +24,9 @@ class uberzahl {
     uberzahl operator - ( const uberzahl& ) const;
     uberzahl operator * ( const uberzahl& ) const;
     uberzahl operator / ( const uberzahl& ) const; // Alex Check
-    uberzahl operator / ( unsigned int ) const;
+    uberzahl operator / ( smallType ) const;
     uberzahl operator % ( const uberzahl& ) const;
-    unsigned int operator % ( unsigned int ) const;
+    smallType operator % ( smallType ) const;
     
     // comparators
     bool operator > ( const uberzahl& ) const;
@@ -36,18 +40,18 @@ class uberzahl {
     uberzahl operator | ( const uberzahl& ) const;
     uberzahl operator & ( const uberzahl& ) const;
     uberzahl operator ^ ( const uberzahl& ) const;
-    uberzahl operator >> ( unsigned int ) const;
-    uberzahl operator << ( unsigned int ) const;
+    uberzahl operator >> ( smallType ) const;
+    uberzahl operator << ( smallType ) const;
 
     // Emily Update
     // inverses
 
     // uses the rand function - to seed use srand (unsigned int seed);
-    uberzahl random ( unsigned int );
+    uberzahl random ( smallType );
 
   private:
     std::string string_value;
-    std::vector<unsigned int> value_vector;
+    std::vector<smallType> value_vector;
     void convert_to_numeric ( void );
     std::string convert_to_string ( void ) const; // Emily do this too
     void clean_bits ( void );

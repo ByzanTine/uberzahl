@@ -9,6 +9,7 @@ int main( void ){
   uberzahl x = "1000000000000000000000000";
   uberzahl y;
   y.random(3);
+  cout << sizeof(unsigned short) << " " << sizeof(unsigned int) << " " << sizeof(unsigned long long) << endl;
   cout << x << endl;
   cout << y << endl;
   cout << ( x / y ) << endl;

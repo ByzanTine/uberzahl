@@ -5,7 +5,10 @@
 #include<cstdlib>
 
 #include"uberzahl.h"
-#define maxBits (8 * sizeof(int))
+#define maxBits (8 * sizeof(unsigned short))
+#define smallType unsigned short
+#define mediumType unsigned int
+#define largeType unsigned long long
 
 uberzahl::uberzahl ( void )
   : string_value("0")
@@ -13,7 +16,7 @@ uberzahl::uberzahl ( void )
   convert_to_numeric();
 }
 
-uberzahl::uberzahl ( unsigned long long number ){
+uberzahl::uberzahl ( largeType number ){
   value_vector.push_back(number);
   while ( number != 0 ){
     number = number >> maxBits;
@@ -52,12 +55,12 @@ void uberzahl::clean_bits ( void ){
 }
 
 
-uberzahl uberzahl::operator << ( unsigned int shift ) const
+uberzahl uberzahl::operator << ( smallType shift ) const
 {
   uberzahl retval = "0";
   retval.value_vector.pop_back();
-  unsigned int largeshift = shift / maxBits;
-  unsigned int smallshift = shift % maxBits;
+  smallType largeshift = shift / maxBits;
+  smallType smallshift = shift % maxBits;
 
   for ( size_t i=0; i < largeshift + value_vector.size() + 1; ++i )
     retval.value_vector.push_back(0);
@@ -65,7 +68,7 @@ uberzahl uberzahl::operator << ( unsigned int shift ) const
   for ( size_t i=0; i < value_vector.size(); ++i )
     retval.value_vector[i+largeshift] = value_vector[i] << smallshift;
   for ( size_t i=0; i < value_vector.size(); ++i ){
-    unsigned long workspace = value_vector[i];
+    mediumType workspace = value_vector[i];
     workspace = workspace >> ( maxBits - smallshift );
     retval.value_vector[i+largeshift+1] += workspace;
   }
@@ -74,11 +77,11 @@ uberzahl uberzahl::operator << ( unsigned int shift ) const
   return retval;
 }
 
-uberzahl uberzahl::operator >> ( unsigned int shift ) const
+uberzahl uberzahl::operator >> ( smallType shift ) const
 {
   uberzahl retval = "0";
-  unsigned int largeshift = shift / maxBits;
-  unsigned int smallshift = shift % maxBits;
+  smallType largeshift = shift / maxBits;
+  smallType smallshift = shift % maxBits;
 
   for ( size_t i=0; i < value_vector.size() - largeshift - 1; ++i )
     retval.value_vector.push_back(0);
@@ -86,7 +89,7 @@ uberzahl uberzahl::operator >> ( unsigned int shift ) const
   for ( size_t i=0; i < value_vector.size() - largeshift; ++i )
     retval.value_vector[i] = value_vector[i + largeshift] >> smallshift;
   for ( size_t i=0; i < value_vector.size() - largeshift; ++i ){
-    unsigned long workspace = value_vector[i + largeshift + 1];
+    mediumType workspace = value_vector[i + largeshift + 1];
     workspace = workspace << ( maxBits - smallshift );
     retval.value_vector[i] += workspace;
   }
@@ -99,7 +102,7 @@ uberzahl uberzahl::operator + ( const uberzahl& input ) const
 {
   uberzahl x = *this;
   uberzahl y = input;
-  unsigned long workbench = 0;
+  mediumType workbench = 0;
   uberzahl retval = "0";
   retval.value_vector.clear();
 
@@ -127,7 +130,7 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
 {
   uberzahl x = *this;
   uberzahl y = input;
-  unsigned long workbench = 0;
+  mediumType workbench = 0;
   uberzahl retval = "0";
 
   // constraint that left side !< right side
@@ -162,8 +165,8 @@ uberzahl uberzahl::operator * ( const uberzahl& input ) const
   uberzahl retval = "0";
   retval.value_vector.clear();
 
-  unsigned int carry = 0;
-  unsigned long workbench = 0;
+  smallType carry = 0;
+  mediumType workbench = 0;
 
   // this assumes your uberzahls dont use up your entire hard
   // drive of space to store a number... I feel it is a fair
@@ -173,7 +176,7 @@ uberzahl uberzahl::operator * ( const uberzahl& input ) const
   for ( size_t i = 0; i <= t; ++i ){
     carry = 0;
     for ( size_t j = 0; j <= n; ++ j ){
-      workbench = retval.value_vector[i+j] + ((unsigned long) x.value_vector[j])*y.value_vector[i] + carry;
+      workbench = retval.value_vector[i+j] + ((mediumType) x.value_vector[j])*y.value_vector[i] + carry;
       retval.value_vector[i+j] = workbench;
       carry = workbench >> maxBits;
     }
@@ -213,7 +216,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
   
   // step 3 -- the annoying part
   for ( size_t i=n; i > t; --i ){
-    unsigned long long workbench = x.value_vector[i];
+    largeType workbench = x.value_vector[i];
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-1];
 
@@ -224,14 +227,14 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-2];
-    unsigned long long workbench2 = y.value_vector[t];
+    largeType workbench2 = y.value_vector[t];
     workbench2 = workbench2 << maxBits;
     workbench2 = workbench2 + y.value_vector[t-1];
 
     while ( q.value_vector[i-t-1]*workbench2 > workbench )
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
 
-    unsigned int quot = q.value_vector[i-t-1];
+    smallType quot = q.value_vector[i-t-1];
     if ( x < (x - ((y << (maxBits*(i-t-1))) * quot) ) )
       x = x - ((y << (maxBits*(i-t-1))) * ( quot - 1 ));
     else
@@ -252,10 +255,10 @@ uberzahl uberzahl::operator % ( const uberzahl& number ) const
   return retval;
 }
 
-uberzahl uberzahl::operator / (unsigned int divisor) const
+uberzahl uberzahl::operator / (smallType divisor) const
 {
 	uberzahl retval = *this;
-	unsigned long long current = 0;
+	largeType current = 0;
 	for(int i=value_vector.size()-1;i>=0;i--) {
 		current <<= maxBits;
 		current+=value_vector[i];
@@ -266,10 +269,10 @@ uberzahl uberzahl::operator / (unsigned int divisor) const
 	return retval;
 }
 
-unsigned int uberzahl::operator % (unsigned int modulus) const
+smallType uberzahl::operator % (smallType modulus) const
 {
-	unsigned long long retval = 0;
-	unsigned long long coefficient = 1;
+	largeType retval = 0;
+	largeType coefficient = 1;
 	for(int i=0;i<value_vector.size();i++) {
 		retval+=coefficient*value_vector[i];
 		retval%=modulus;
@@ -304,7 +307,7 @@ std::string uberzahl::convert_to_string ( void ) const
 void uberzahl::convert_to_numeric ( void ){
   std::string workbench = string_value;
   value_vector.clear();
-  unsigned int numeric_value = 0;
+  smallType numeric_value = 0;
   size_t bits = 0;
 
   while ( workbench.length() ){
@@ -425,7 +428,7 @@ uberzahl uberzahl::operator | ( const uberzahl& rhs ) const
   uberzahl retval = "0";
   retval.value_vector.pop_back();
   for ( size_t i=0; i < value_vector.size(); ++i ){
-    unsigned int workbench = value_vector[i] | rhs.value_vector[i];
+    smallType workbench = value_vector[i] | rhs.value_vector[i];
     retval.value_vector.push_back( workbench );
   }
   for ( size_t i=value_vector.size(); i < rhs.value_vector.size(); ++i )
@@ -443,7 +446,7 @@ uberzahl uberzahl::operator & ( const uberzahl& rhs ) const
   uberzahl retval = "0";
   retval.value_vector.pop_back();
   for ( size_t i=0; i < value_vector.size(); ++i ){
-    unsigned int workbench = value_vector[i] & rhs.value_vector[i];
+    smallType workbench = value_vector[i] & rhs.value_vector[i];
     retval.value_vector.push_back( workbench );
   }
 
@@ -459,7 +462,7 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   uberzahl retval = "0";
   retval.value_vector.pop_back();
   for ( size_t i=0; i < value_vector.size(); ++i ){
-    unsigned int workbench = value_vector[i] ^ rhs.value_vector[i];
+    smallType workbench = value_vector[i] ^ rhs.value_vector[i];
     retval.value_vector.push_back( workbench );
   }
   for ( size_t i=value_vector.size(); i < rhs.value_vector.size(); ++i )
@@ -469,12 +472,12 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   return retval;
 }
 
-uberzahl uberzahl::random ( unsigned int bits ){
+uberzahl uberzahl::random ( smallType bits ){
   assert( bits > 0 );
   value_vector.clear();
 
-  unsigned int shortbits = bits % maxBits;
-  unsigned int longbits = bits / maxBits;
+  smallType shortbits = bits % maxBits;
+  smallType longbits = bits / maxBits;
   
   for ( size_t i = 0; i <= longbits; ++i )
     value_vector.push_back( rand() );
