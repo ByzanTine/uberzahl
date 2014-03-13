@@ -206,13 +206,13 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
     workbench = workbench << maxBits;
     workbench = workbench + x.value_vector[i-1];
     // workbench = x[i]B + x[i-1]
-    
+
     q.value_vector[i-t-1] = workbench / y.value_vector[t];
-    if ( x < (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1] )
+    while ( x < (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1] )
       q.value_vector[i-t-1] = q.value_vector[i-t-1] - 1;
     x = x - (y << ((i-t-1)*maxBits))*q.value_vector[i-t-1];
   }
-  
+
   q.clean_bits();
   return q;
 }
@@ -227,49 +227,48 @@ uberzahl uberzahl::operator % ( const uberzahl& number ) const
 
 uberzahl uberzahl::operator / (smallType divisor) const
 {
-	uberzahl retval = *this;
-	largeType current = 0;
-	for(int i=value_vector.size()-1;i>=0;i--) {
-		current <<= maxBits;
-		current+=value_vector[i];
-		retval.value_vector[i] = current/divisor;
-		current %=divisor;
-	}
-	retval.clean_bits();
-	return retval;
+  uberzahl retval = *this;
+  largeType current = 0;
+  for(int i=value_vector.size()-1;i>=0;i--) {
+    current <<= maxBits;
+    current+=value_vector[i];
+    retval.value_vector[i] = current/divisor;
+    current %=divisor;
+  }
+  retval.clean_bits();
+  return retval;
 }
 
 smallType uberzahl::operator % (smallType modulus) const
 {
-	largeType retval = 0;
-	largeType coefficient = 1;
-	for(int i=0;i<value_vector.size();i++) {
-		retval+=coefficient*value_vector[i];
-		retval%=modulus;
-		coefficient<<=maxBits;
-		coefficient%=modulus;
-	}
-	return retval;
+  largeType retval = 0;
+  largeType coefficient = 1;
+  for(int i=0;i<value_vector.size();i++) {
+    retval+=coefficient*value_vector[i];
+    retval%=modulus;
+    coefficient<<=maxBits;
+    coefficient%=modulus;
+  }
+  return retval;
 }
 
 // convert the stored numeric_value into a string
 std::string uberzahl::convert_to_string ( void ) const
 {
-	if (*this == "0")
-		return "0";
-	
-  uberzahl temp = *this;
-	std::string reversed = "";
-	uberzahl zero = 0ULL;
-	while(temp>zero) {
-		reversed+=temp%10+'0';
-		temp=temp/10;
-	}
+  if(*this == "0")
+    return "0";
 
-	std::string retval = "";
-	for(int i=reversed.size()-1;i>=0;i--)
-		retval+=reversed[i];
-	
+  uberzahl temp = *this;
+  std::string reversed = "";
+  while(temp>"0") {
+    reversed+=temp%10+'0';
+    temp=temp/10;
+  }
+
+  std::string retval = "";
+  for(int i=reversed.size()-1;i>=0;i--)
+    retval+=reversed[i];
+
   return retval;
 }
 
@@ -318,11 +317,11 @@ void uberzahl::convert_to_numeric ( void ){
 }
 
 std::ostream& operator << ( std::ostream& ost, const uberzahl& number ){
-/*  ost << "string : " << number.convert_to_string() << std::endl << "base-2**" << maxBits << " : ";
-  for ( size_t i = 0; i < number.value_vector.size(); ++ i )
-    ost << number.value_vector[i] << ' ';
-  ost << std::endl;
-*/
+  /*  ost << "string : " << number.convert_to_string() << std::endl << "base-2**" << maxBits << " : ";
+      for ( size_t i = 0; i < number.value_vector.size(); ++ i )
+      ost << number.value_vector[i] << ' ';
+      ost << std::endl;
+      */
   ost << number.convert_to_string();
   return ost;
 }
@@ -412,7 +411,7 @@ uberzahl uberzahl::operator | ( const uberzahl& rhs ) const
 uberzahl uberzahl::operator & ( const uberzahl& rhs ) const
 {
   if ( value_vector.size() > rhs.value_vector.size() )
-    return rhs | *this;
+    return rhs & *this;
 
   uberzahl retval = "0";
   retval.value_vector.pop_back();
@@ -428,7 +427,7 @@ uberzahl uberzahl::operator & ( const uberzahl& rhs ) const
 uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
 {
   if ( value_vector.size() > rhs.value_vector.size() )
-    return rhs | *this;
+    return rhs ^ *this;
 
   uberzahl retval = "0";
   retval.value_vector.pop_back();
@@ -449,7 +448,7 @@ uberzahl uberzahl::random ( mediumType bits ){
 
   smallType shortbits = bits % maxBits;
   smallType longbits = bits / maxBits;
-  
+
   for ( size_t i = 0; i <= longbits; ++i )
     value_vector.push_back( rand() );
 
@@ -465,14 +464,54 @@ uberzahl uberzahl::random ( mediumType bits ){
   return *this;
 }
 
+uberzahl uberzahl::inverse ( const uberzahl& b) const
+{
+  if(*this=="1")
+    return "1";
+  std::pair<std::pair<uberzahl,uberzahl>,bool> inv = inverse(*this,b);
+  inv.first.first = inv.first.first % b;
+  if(inv.second && inv.first.first!="0")
+    return b-inv.first.first;
+  else
+    return inv.first.first;
+}
+
+std::pair<std::pair<uberzahl,uberzahl>,bool> uberzahl::inverse ( const uberzahl& a, const uberzahl& b) const
+{
+  uberzahl nexta = b%a, coeff = b/a;
+  if(nexta == "0")
+    return std::make_pair(std::make_pair("0","0"),true);
+  else if(nexta == "1")
+    return std::make_pair(std::make_pair(coeff,"1"),true);
+  std::pair<std::pair<uberzahl,uberzahl>,bool> nextinv = inverse(nexta,a);
+  return std::make_pair(std::make_pair(nextinv.first.second+nextinv.first.first*coeff,nextinv.first.first),!nextinv.second);
+}
+
 smallType uberzahl::bit ( mediumType n ) const
 {
   mediumType largeBit = n / maxBits;
   smallType smallBit = n % maxBits;
 
-  if ( largeBit > value_vector.size() )
+  if ( largeBit >= value_vector.size() )
     return 0;
 
   smallType bits = value_vector[largeBit];
-  return ( bits | ( 1 << smallBit ) );
+  return (bits>>smallBit) & 1;
+}
+
+smallType uberzahl::bitLength ( void ) const
+{
+  for(int i=value_vector.size()-1;i>=0;i--) {
+    if(value_vector[i]!=0) {
+      largeType k=1;
+      int j=0;
+      while(k<value_vector[i]) {
+        //		std::cout << j << " " << k << std::endl;
+        k = k<<1;
+        j++;
+      }
+      return i*maxBits+j;
+    }
+  }
+  return 0;
 }

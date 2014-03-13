@@ -23,7 +23,7 @@ class uberzahl {
     uberzahl operator + ( const uberzahl& ) const;
     uberzahl operator - ( const uberzahl& ) const;
     uberzahl operator * ( const uberzahl& ) const;
-    uberzahl operator / ( const uberzahl& ) const; // TODO - find and fix the bug
+    uberzahl operator / ( const uberzahl& ) const;
     uberzahl operator / ( smallType ) const;
     uberzahl operator % ( const uberzahl& ) const;
     smallType operator % ( smallType ) const;
@@ -43,8 +43,10 @@ class uberzahl {
     uberzahl operator >> ( smallType ) const;
     uberzahl operator << ( smallType ) const;
 
-    // TODO inverses
+    uberzahl inverse ( const uberzahl& ) const;
+    uberzahl gcd ( const uberzahl& ) const;
     smallType bit ( mediumType ) const;
+    smallType bitLength ( void ) const;
 
     // uses the rand function - to seed use srand (unsigned int seed);
     uberzahl random ( mediumType );
@@ -55,6 +57,7 @@ class uberzahl {
     void convert_to_numeric ( void );
     std::string convert_to_string ( void ) const;
     void clean_bits ( void );
+    std::pair<std::pair<uberzahl,uberzahl>,bool> inverse ( const uberzahl&, const uberzahl& ) const;
 };
 
 #endif
