@@ -535,6 +535,16 @@ uberzahl uberzahl::inverse ( const uberzahl& b) const
     return inv.first.first;
 }
 
+uberzahl uberzahl::gcd( const uberzahl& that ) const
+{
+  if ( *this < that )
+    return that.gcd(*this);
+  else if( that == "0" )
+    return *this;
+  else 
+    return that.gcd( *this % that );
+}
+
 std::pair<std::pair<uberzahl,uberzahl>,bool> uberzahl::inverse ( const uberzahl& a, const uberzahl& b) const
 {
   uberzahl nexta = b%a, coeff = b/a;
@@ -579,11 +589,11 @@ uberzahl uberzahl::exp ( const uberzahl& exponent ) const
 {
   if ( exponent == "0" ) // exponent of 0
     return "1";
-  else if ( exponent == "1" ) // exponent of 1
+  else if ( exponent == 1 ) // exponent of 1
     return *this;
 
-  if ( (exponent % "2") == "1" ) // odd exponent
-    return (this->exp(exponent ^ "1")) * (*this);
+  if ( (exponent % 2) == 1 ) // odd exponent
+    return (this->exp(exponent ^ 1)) * (*this);
   else // even exponent
     return (this->exp(exponent >> 1)) * (this->exp(exponent >> 1));
 }

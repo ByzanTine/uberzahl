@@ -5,10 +5,9 @@ using namespace std;
 
 int main( void ){
   srand(time(0));
-  unsigned long long a = 100;
-  uberzahl y = a;
+  uberzahl y = "123123123123123123123123123123123123123123";
 
-  cout << y.exp(y) << endl;
+  cout << y.gcd(1111111111111111) << endl;
 //  uberzahl y = "4";
   
   /*unsigned int x = -2;
