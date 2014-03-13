@@ -583,7 +583,7 @@ uberzahl uberzahl::exp ( const uberzahl& exponent ) const
     return *this;
 
   if ( (exponent % "2") == "1" ) // odd exponent
-    return (this->exp(exponent-1)) * (*this);
+    return (this->exp(exponent ^ "1")) * (*this);
   else // even exponent
-    return (this->exp(exponent/2)) * (this->exp(exponent/2));
+    return (this->exp(exponent >> 1)) * (this->exp(exponent >> 1));
 }
