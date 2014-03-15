@@ -583,12 +583,12 @@ smallType uberzahl::bitLength ( void ) const
 uberzahl uberzahl::exp ( const uberzahl& exponent ) const
 {
   if ( exponent == "0" ) // exponent of 0
-    return "1";
-  else if ( exponent == "1" ) // exponent of 1
+    return 1;
+  else if ( exponent == 1 ) // exponent of 1
     return *this;
 
-  if ( (exponent&"1") == "1" ) // odd exponent
-    return (this->exp(exponent ^ 1)) * (*this);
+  if ( (exponent&1) == 1 ) // odd exponent
+    return (this->exp(exponent^1)) * (*this);
   else {
     uberzahl tmp = this->exp(exponent >> 1);
     return tmp * tmp;
@@ -600,12 +600,12 @@ uberzahl uberzahl::exp ( const uberzahl& exponent ) const
 uberzahl uberzahl::expm( const uberzahl& n, const uberzahl& mod ) const
 {
   if ( n == "0" )
-    return "1";
-  else if ( n == "1" )
+    return 1;
+  else if ( n == 1 )
     return ( *this % mod );
   
-  if ( (n&"1") == "1" )
-    return ( (this->expm(n-"1", mod)) * (*this) ) % mod;
+  if ( (n&1) == 1 )
+    return ( (this->expm(n^1, mod)) * (*this) ) % mod;
   else {
     uberzahl tmp = this->expm(n>>1, mod);
     return (tmp * tmp) % mod;
@@ -624,7 +624,7 @@ uberzahl random ( const uberzahl& a, const uberzahl& b )
 
 bool rabinmiller ( const uberzahl& n, unsigned int k ){
   // take care of corner cases 1,2,3 and even
-  if ( n <= 1 ) return false;
+  if ( n < 2 ) return false;
   else if ( n < 4 ) return true;
   else if ( (n&1) == "0" ) return false;
 
@@ -639,18 +639,18 @@ bool rabinmiller ( const uberzahl& n, unsigned int k ){
   uberzahl a;
   uberzahl x;
   for ( unsigned int i = 0; i < k; ++i ){
-    a = random( "2", n-"2" );
+    a = random( 2, n-2 );
     x = a.expm(d,n);
 
-    if ( x == "1" || x == n-"1" ) continue;
+    if ( x == 1 || x == n-1 ) continue;
 
     for ( unsigned int j = 0; j < s - 1; ++j ){
       x = x.expm(2,n);
-      if ( x == "1" ) return false; // composite
-      if ( x == n - "1" ) break;
+      if ( x == 1 ) return false; // composite
+      if ( x == n-1 ) break;
     }
 
-    if ( x == n - "1" ) continue;
+    if ( x == n-1 ) continue;
     
     return false; // composite
   }
