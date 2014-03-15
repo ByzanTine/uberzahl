@@ -29,7 +29,7 @@ uberzahl::uberzahl ( const char* number ){
   string_value = number;
   convert_to_numeric();
 }
-
+/*
 uberzahl::uberzahl(const mpz_class& number){
 	mpz_class scale = mask+1;
 	mpz_class current = number;
@@ -38,7 +38,7 @@ uberzahl::uberzahl(const mpz_class& number){
 		value_vector.push_back(t.get_ui());
 		current/=scale;
 	}
-}
+}*/
 
 uberzahl::uberzahl ( const uberzahl& number ){
   string_value = number.string_value;
@@ -422,7 +422,7 @@ bool uberzahl::operator == ( const uberzahl& rhs ) const
   return ( *this >= rhs ) && ( *this <= rhs );
 }
 
-bool uberzahl::operator == ( const mpz_class& rhs ) const
+/*bool uberzahl::operator == ( const mpz_class& rhs ) const
 {
 	mpz_class scale= mask+1;
 	mpz_class rhstemp = rhs;
@@ -432,7 +432,7 @@ bool uberzahl::operator == ( const mpz_class& rhs ) const
 		rhstemp/=scale;
 	}
 	return rhstemp == 0;
-}
+}*/
 
 
 bool uberzahl::operator != ( const uberzahl& rhs ) const
