@@ -198,8 +198,6 @@ uberzahl uberzahl::operator * ( const uberzahl& input ) const
 
 uberzahl uberzahl::operator / ( const uberzahl& number ) const
 {
-//	std::cout << "division of " << *this << " and " << number << std::endl;
-//*
 	uberzahl x = *this;
 	uberzahl y = number;
 	uberzahl q = 0ULL;
@@ -216,9 +214,6 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 	for(int i=0;i<maxBits*(n-t+1);i++) {
 		y = y>>1;
 		q = q<<1;
-//		std::cout << x << y << q << std::endl;
-//		int asdf;
-//		std::cin >> asdf;
 		if(x>=y) {
 			x = x-y;
 			q = q+1;
@@ -538,7 +533,7 @@ uberzahl uberzahl::inverse ( const uberzahl& b) const
 uberzahl uberzahl::gcd( const uberzahl& that ) const
 {
   if ( *this < that )
-    return that.gcd(*this);
+    return that.gcd( *this );
   else if( that == "0" )
     return *this;
   else 
@@ -589,11 +584,84 @@ uberzahl uberzahl::exp ( const uberzahl& exponent ) const
 {
   if ( exponent == "0" ) // exponent of 0
     return "1";
-  else if ( exponent == 1 ) // exponent of 1
+  else if ( exponent == "1" ) // exponent of 1
     return *this;
 
-  if ( (exponent % 2) == 1 ) // odd exponent
+  if ( (exponent&"1") == "1" ) // odd exponent
     return (this->exp(exponent ^ 1)) * (*this);
-  else // even exponent
-    return (this->exp(exponent >> 1)) * (this->exp(exponent >> 1));
+  else {
+    uberzahl tmp = this->exp(exponent >> 1);
+    return tmp * tmp;
+  }
+}
+
+// this is the recursive version, you need to implement the
+// iterative version in your code!
+uberzahl uberzahl::expm( const uberzahl& n, const uberzahl& mod ) const
+{
+  if ( n == "0" )
+    return "1";
+  else if ( n == "1" )
+    return ( *this % mod );
+  
+  if ( (n&"1") == "1" )
+    return ( (this->expm(n-"1", mod)) * (*this) ) % mod;
+  else {
+    uberzahl tmp = this->expm(n>>1, mod);
+    return (tmp * tmp) % mod;
+  }
+}
+
+uberzahl random ( const uberzahl& a, const uberzahl& b )
+{
+  if ( a > b ) return random( b, a );
+
+  uberzahl retval;
+  retval.random( b.bitLength() + 1 );
+  retval = (retval % ( b-a )) + a;
+  return retval;
+}
+
+bool rabinmiller ( const uberzahl& n, unsigned int k ){
+  // take care of corner cases 1,2,3 and even
+  if ( n <= 1 ) return false;
+  else if ( n < 4 ) return true;
+  else if ( (n&1) == "0" ) return false;
+
+  uberzahl d = (n - 1) >> 1;
+  unsigned int s = 1;
+  while ( (d&1) == "0" ){
+    d = d >> 1;
+    s = s + 1;
+  }
+
+  // witness loop
+  uberzahl a;
+  uberzahl x;
+  for ( unsigned int i = 0; i < k; ++i ){
+    a = random( "2", n-"2" );
+    x = a.expm(d,n);
+
+    if ( x == "1" || x == n-"1" ) continue;
+
+    for ( unsigned int j = 0; j < s - 1; ++j ){
+      x = x.expm(2,n);
+      if ( x == "1" ) return false; // composite
+      if ( x == n - "1" ) break;
+    }
+
+    if ( x == n - "1" ) continue;
+    
+    return false; // composite
+  }
+
+  return true; // probably prime
+}
+
+uberzahl nextprime ( const uberzahl& n, unsigned int accuracy = 50){
+  uberzahl retval = n;
+  if ( (retval&1) == "0" ) retval = retval + 1;
+  while ( !rabinmiller(retval, accuracy) )
+    retval = retval + 2;
+  return retval;
 }

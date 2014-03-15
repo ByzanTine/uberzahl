@@ -1,19 +1,5 @@
 Herzlich willkomen auf der Uber Zahl!
 
-=======================================================================
-
-Compiling : g++ filename.cpp uberzahl.cpp -o outputfile
-
-Check uberzahl.h for public functionality of the uberzahl class
-
-Currently there is no way to generate primes with uberzahl
-however you can uncomment the mpz class functions and generate
-a prime with mpz.
-
-Alternatively Rabin-Miller Primality testing will be available Friday
-
-======================================================================
-
 The number is stored in two forms :
   - string format where it is updated by the user
   - vector<unsigned int> format where the arithmetic is done
