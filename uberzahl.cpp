@@ -168,8 +168,6 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
 
 uberzahl uberzahl::operator * ( const uberzahl& y ) const
 {
-//  uberzahl x = *this;
-//  uberzahl y = input;
   size_t n = value_vector.size() - 1;
   size_t t = y.value_vector.size() - 1;
   uberzahl retval = "0";
@@ -178,9 +176,6 @@ uberzahl uberzahl::operator * ( const uberzahl& y ) const
   smallType carry = 0;
   largeType workbench = 0;
 
-  // this assumes your uberzahls dont use up your entire hard
-  // drive of space to store a number... I feel it is a fair
-  // assumption.
   for ( size_t i = 0; i <= n + t + 1; ++i )
     retval.value_vector.push_back(0);
   for ( size_t i = 0; i <= t; ++i ){
