@@ -30,7 +30,7 @@ uberzahl::uberzahl ( const char* number ){
   convert_to_numeric();
 }
 
-/*uberzahl::uberzahl(const mpz_class& number){
+uberzahl::uberzahl(const mpz_class& number){
 	mpz_class scale = mask+1;
 	mpz_class current = number;
 	while(current>0) {
@@ -38,7 +38,7 @@ uberzahl::uberzahl ( const char* number ){
 		value_vector.push_back(t.get_ui());
 		current/=scale;
 	}
-}*/
+}
 
 uberzahl::uberzahl ( const uberzahl& number ){
   string_value = number.string_value;
@@ -166,11 +166,11 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
   return retval;
 }
 
-uberzahl uberzahl::operator * ( const uberzahl& input ) const
+uberzahl uberzahl::operator * ( const uberzahl& y ) const
 {
-  uberzahl x = *this;
-  uberzahl y = input;
-  size_t n = x.value_vector.size() - 1;
+//  uberzahl x = *this;
+//  uberzahl y = input;
+  size_t n = value_vector.size() - 1;
   size_t t = y.value_vector.size() - 1;
   uberzahl retval = "0";
   retval.value_vector.clear();
@@ -186,7 +186,7 @@ uberzahl uberzahl::operator * ( const uberzahl& input ) const
   for ( size_t i = 0; i <= t; ++i ){
     carry = 0;
     for ( size_t j = 0; j <= n; ++ j ){
-      workbench = retval.value_vector[i+j] + ((largeType) x.value_vector[j])*y.value_vector[i] + carry;
+      workbench = retval.value_vector[i+j] + ((largeType) value_vector[j])*y.value_vector[i] + carry;
       retval.value_vector[i+j] = workbench & ((1ULL<<maxBits)-1);
       carry = workbench >> maxBits;
     }
@@ -203,7 +203,8 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 	uberzahl q = 0ULL;
 	assert( y != "0" ); // y can not be 0 in our division algorithm
 	if ( x < y ) return q; // return 0 since y > x
-	x.clean_bits();y.clean_bits();
+	x.clean_bits();
+  y.clean_bits();
 	size_t n = x.value_vector.size() - 1;
 	size_t t = y.value_vector.size() - 1;
 
@@ -426,7 +427,7 @@ bool uberzahl::operator == ( const uberzahl& rhs ) const
   return ( *this >= rhs ) && ( *this <= rhs );
 }
 
-/*bool uberzahl::operator == ( const mpz_class& rhs ) const
+bool uberzahl::operator == ( const mpz_class& rhs ) const
 {
 	mpz_class scale= mask+1;
 	mpz_class rhstemp = rhs;
@@ -436,7 +437,8 @@ bool uberzahl::operator == ( const uberzahl& rhs ) const
 		rhstemp/=scale;
 	}
 	return rhstemp == 0;
-}*/
+}
+
 
 bool uberzahl::operator != ( const uberzahl& rhs ) const
 {
@@ -584,10 +586,10 @@ uberzahl uberzahl::exp ( const uberzahl& exponent ) const
 {
   if ( exponent == "0" ) // exponent of 0
     return 1;
-  else if ( exponent == 1 ) // exponent of 1
+  else if ( exponent == "1" ) // exponent of 1
     return *this;
 
-  if ( (exponent&1) == 1 ) // odd exponent
+  if ( (exponent&1) == "1" ) // odd exponent
     return (this->exp(exponent^1)) * (*this);
   else {
     uberzahl tmp = this->exp(exponent >> 1);
@@ -601,10 +603,10 @@ uberzahl uberzahl::expm( const uberzahl& n, const uberzahl& mod ) const
 {
   if ( n == "0" )
     return 1;
-  else if ( n == 1 )
+  else if ( n == "1" )
     return ( *this % mod );
   
-  if ( (n&1) == 1 )
+  if ( (n&1) == "1" )
     return ( (this->expm(n^1, mod)) * (*this) ) % mod;
   else {
     uberzahl tmp = this->expm(n>>1, mod);
@@ -642,11 +644,11 @@ bool rabinmiller ( const uberzahl& n, unsigned int k ){
     a = random( 2, n-2 );
     x = a.expm(d,n);
 
-    if ( x == 1 || x == n-1 ) continue;
+    if ( x == "1" || x == n-1 ) continue;
 
     for ( unsigned int j = 0; j < s - 1; ++j ){
       x = x.expm(2,n);
-      if ( x == 1 ) return false; // composite
+      if ( x == "1" ) return false; // composite
       if ( x == n-1 ) break;
     }
 

@@ -8,7 +8,7 @@ using namespace std;
 #define asize 56
 #define bsize 50
 
-/*mpz_class generateNumber(int bits,bool lead1) {
+mpz_class generateNumber(int bits,bool lead1) {
   mpz_class r = lead1?1:rand()%2;
   for(int b=1;b<bits;b++) {
     r*=2;
@@ -18,11 +18,11 @@ using namespace std;
   if(r==0)
     return generateNumber(bits,lead1);
   return r;
-}*/
+}
 
 
 int main( void ){ 
-/*  mpz_class scale= 1;
+  mpz_class scale= 1;
   for(int i=0;i<32;i++)
     scale*=2;
 
@@ -86,7 +86,7 @@ int main( void ){
   if(i%100==0)
   cout << i/100 << "%" << endl;
   }
-  */
+  
   uberzahl x;
   x.random(150);
   cout << "after (and including) " << x << ", the next prime is " << std::flush;
