@@ -58,9 +58,11 @@ const uberzahl& uberzahl::operator = ( const uberzahl& number )
   for ( size_t i=0; i < number.value_vector.size(); ++i )
     value_vector.push_back( number.value_vector[i] );
   clean_bits();
+  return *this;
 }
 
 void uberzahl::clean_bits ( void ){
+  // remove leading 0's
   while ( value_vector.size() > 1 && !value_vector.back() )
     value_vector.pop_back();
 }
@@ -68,7 +70,8 @@ void uberzahl::clean_bits ( void ){
 
 uberzahl uberzahl::operator << ( smallType shift ) const
 {
-  uberzahl retval = "0";
+  // binary left shift
+  uberzahl retval;
   retval.value_vector.pop_back();
   smallType largeshift = shift / maxBits;
   smallType smallshift = shift % maxBits;
@@ -90,7 +93,8 @@ uberzahl uberzahl::operator << ( smallType shift ) const
 
 uberzahl uberzahl::operator >> ( smallType shift ) const
 {
-  uberzahl retval = "0";
+  // binary right shift
+  uberzahl retval;
   smallType largeshift = shift / maxBits;
   smallType smallshift = shift % maxBits;
   for ( int i=0; i < (int)value_vector.size() - (int)largeshift - 1; ++i )
@@ -203,7 +207,7 @@ uberzahl uberzahl::operator / ( const uberzahl& number ) const
 	size_t n = x.value_vector.size() - 1;
 	size_t t = y.value_vector.size() - 1;
 
-	// step 1 -- initialize q to the correct size
+	// initialize q to the correct size
 	for ( size_t i = 0; i < n - t; ++i )
 		q.value_vector.push_back(0);
 	y = y << (maxBits*(n-t+1));
@@ -517,6 +521,7 @@ uberzahl uberzahl::random ( mediumType bits ){
 
 uberzahl uberzahl::inverse ( const uberzahl& b) const
 {
+  // computes (*this)^(-1) mod b
   if(*this=="1")
     return "1";
   std::pair<std::pair<uberzahl,uberzahl>,bool> inv = inverse(*this,b);
@@ -529,6 +534,7 @@ uberzahl uberzahl::inverse ( const uberzahl& b) const
 
 uberzahl uberzahl::gcd( const uberzahl& that ) const
 {
+  // computes gcd(*this, that)
   if ( *this < that )
     return that.gcd( *this );
   else if( that == "0" )
@@ -539,6 +545,7 @@ uberzahl uberzahl::gcd( const uberzahl& that ) const
 
 std::pair<std::pair<uberzahl,uberzahl>,bool> uberzahl::inverse ( const uberzahl& a, const uberzahl& b) const
 {
+  // helper function for inverse
   uberzahl nexta = b%a, coeff = b/a;
   if(nexta == "0")
     return std::make_pair(std::make_pair("0","0"),true);
@@ -550,6 +557,7 @@ std::pair<std::pair<uberzahl,uberzahl>,bool> uberzahl::inverse ( const uberzahl&
 
 smallType uberzahl::bit ( mediumType n ) const
 {
+  // returns the nth bit (0 indexed)
   mediumType largeBit = n / maxBits;
   smallType smallBit = n % maxBits;
 
@@ -562,12 +570,12 @@ smallType uberzahl::bit ( mediumType n ) const
 
 smallType uberzahl::bitLength ( void ) const
 {
+  // returns the bit length (size) of a uberzahl
   for(int i=value_vector.size()-1;i>=0;i--) {
     if(value_vector[i]!=0) {
       largeType k=1;
       int j=0;
       while(k<=value_vector[i]) {
-        //		std::cout << j << " " << k << std::endl;
         k = k<<1;
         j++;
       }
@@ -656,6 +664,7 @@ bool rabinmiller ( const uberzahl& n, unsigned int k ){
 }
 
 uberzahl nextprime ( const uberzahl& n, unsigned int accuracy = 50){
+  // checks every odd number greater or equal to n for primality
   uberzahl retval = n;
   if ( (retval&1) == "0" ) retval = retval + 1;
   while ( !rabinmiller(retval, accuracy) )
