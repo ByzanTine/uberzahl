@@ -3,28 +3,7 @@
 #include<vector>
 #include<assert.h>
 #include<cstdlib>
-#include<climits>
 #include"uberzahl.h"
-
-// configuration options :
-// smallType is the storage for uberzahl -- adjust this to adjust performance
-// UBERZAHL_TYPE_MAX, maxBits, and mask should match smallType
-// mediumType and largeType should be at least 2x the storage of small
-#define largeType unsigned long long
-#define mediumType unsigned long long
-#define smallType unsigned int
-#define UBERZAHL_TYPE_MAX UINT_MAX
-#define maxBits 32
-#define mask 0xffffffffL
-
-// adjust for some different compiler RAND functions
-#if RAND_MAX == 32767
-  #define RAND_BITS 16
-#elif RAND_MAX == 2147483647
-  #define RAND_BITS 32
-#else
-  #define RAND_BITS 64
-#endif
 
 uberzahl::uberzahl ( void ){
   convert_to_numeric("0");
@@ -41,8 +20,8 @@ uberzahl::uberzahl ( largeType number ){
 uberzahl::uberzahl ( const char* number ){
   convert_to_numeric( number );
 }
-/*
-uberzahl::uberzahl(const mpz_class& number){
+
+/*uberzahl::uberzahl(const mpz_class& number){
 	mpz_class scale = mask+1;
 	mpz_class current = number;
 	while(current>0) {
@@ -90,7 +69,7 @@ uberzahl uberzahl::operator << ( smallType shift ) const
     retval.value.push_back(0);
 
   for ( size_t i=0; i < value.size(); ++i )
-    retval.value[i+largeshift] = (value[i] << smallshift)&mask;
+    retval.value[i+largeshift] = (value[i] << smallshift) & mask;
   for ( size_t i=0; i < value.size(); ++i ){
     mediumType workspace = value[i];
     workspace = workspace >> ( maxBits - smallshift );
@@ -115,7 +94,7 @@ uberzahl uberzahl::operator >> ( smallType shift ) const
   for ( size_t i=0; i + largeshift + 1 < value.size(); ++i ){
     mediumType workspace = value[i + largeshift + 1];
     workspace = workspace << ( maxBits - smallshift );
-    retval.value[i] += workspace&mask;
+    retval.value[i] += workspace & mask;
   }
 
   retval.clean_bits();
@@ -140,7 +119,7 @@ uberzahl uberzahl::operator + ( const uberzahl& input ) const
   // perform addition operation
   for ( size_t i = 0; i < x.value.size(); ++i ){
     workbench = workbench + x.value[i] + y.value[i];
-    retval.value.push_back(workbench&mask);
+    retval.value.push_back(workbench & mask);
     workbench = workbench >> maxBits;
   }
 
@@ -170,8 +149,8 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
 
   // perform subtraction
   for ( size_t i = 0; i < x.value.size(); ++i ){
-    workbench = x.value[i] - y.value[i] - workbench;
-    retval.value.push_back(workbench&mask);
+    workbench = x.value[i] - (y.value[i] + workbench);
+    retval.value.push_back(workbench & mask);
     workbench = workbench >> maxBits;
     if ( workbench ) workbench = 1;
   }
