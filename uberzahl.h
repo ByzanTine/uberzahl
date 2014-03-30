@@ -19,9 +19,11 @@ class uberzahl {
 //    uberzahl( const mpz_class& );
     const uberzahl& operator = ( const uberzahl& );
 
+    // uses the rand function - to seed use srand (unsigned int seed);
+    uberzahl random ( mediumType );
     friend std::ostream& operator << ( std::ostream&, const uberzahl& );
 
-    // arithmetic - not true pass by references :(
+    // standard arithmetic operations
     uberzahl operator + ( const uberzahl& ) const;
     uberzahl operator - ( const uberzahl& ) const;
     uberzahl operator * ( const uberzahl& ) const;
@@ -32,7 +34,7 @@ class uberzahl {
     uberzahl exp ( const uberzahl& ) const;
     uberzahl expm( const uberzahl&, const uberzahl& ) const;
 
-    // comparators
+    // standard numeric comparators
     bool operator > ( const uberzahl& ) const;
     bool operator < ( const uberzahl& ) const;
     bool operator >= ( const uberzahl& ) const;
@@ -41,25 +43,30 @@ class uberzahl {
 //    bool operator == ( const mpz_class& ) const;
     bool operator != ( const uberzahl& ) const;
 
-    // bitwize operators
+    // standard c/c++ bitwize operators
     uberzahl operator | ( const uberzahl& ) const;
     uberzahl operator & ( const uberzahl& ) const;
     uberzahl operator ^ ( const uberzahl& ) const;
     uberzahl operator >> ( smallType ) const;
     uberzahl operator << ( smallType ) const;
 
+    uberzahl extract ( smallType, smallType );
+    uberzahl rotateLeft ( smallType, smallType, smallType );
+    uberzahl rotateRight ( smallType, smallType, smallType );
+    void setBit ( smallType );
+    void clearBit ( smallType );
+    void toggleBit ( smallType );
+
+    // auxilary functions
     uberzahl inverse ( const uberzahl& ) const;
     uberzahl gcd ( const uberzahl& ) const;
+
     smallType bit ( mediumType ) const;
     smallType bitLength ( void ) const;
 
-    // uses the rand function - to seed use srand (unsigned int seed);
-    uberzahl random ( mediumType );
-
   private:
-    std::string string_value;
-    std::vector<smallType> value_vector;
-    void convert_to_numeric ( void );
+    std::vector<smallType> value;
+    void convert_to_numeric ( const char* );
     std::string convert_to_string ( void ) const;
     void clean_bits ( void );
     std::pair<std::pair<uberzahl,uberzahl>,bool> inverse ( const uberzahl&, const uberzahl& ) const;
