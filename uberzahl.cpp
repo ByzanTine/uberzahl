@@ -170,7 +170,7 @@ uberzahl uberzahl::operator - ( const uberzahl& input ) const
 
   // perform subtraction
   for ( size_t i = 0; i < x.value.size(); ++i ){
-    workbench = -workbench + x.value[i] - y.value[i];
+    workbench = x.value[i] - y.value[i] - workbench;
     retval.value.push_back(workbench&mask);
     workbench = workbench >> maxBits;
     if ( workbench ) workbench = 1;
@@ -364,7 +364,7 @@ void uberzahl::convert_to_numeric ( const char* string_value ){
   }
 
   // take care of the remaining bits
-  numeric_value = numeric_value >> (-bits % maxBits);
+  numeric_value = numeric_value >> (maxBits - (bits % maxBits));
   value.push_back(numeric_value);
 }
 
@@ -702,8 +702,8 @@ uberzahl uberzahl::extract ( smallType start, smallType end ){
     retval.value[start/maxBits] = retval.value[start/maxBits] << start%maxBits; 
   } // zero first start bits
   if ( end/maxBits < value.size() ){
-    retval.value[end/maxBits] = retval.value[end/maxBits] << ((-end-1)%maxBits);
-    retval.value[end/maxBits] = retval.value[end/maxBits] >> ((-end-1)%maxBits);
+    retval.value[end/maxBits] = retval.value[end/maxBits] << (maxBits - ((end+1)%maxBits));
+    retval.value[end/maxBits] = retval.value[end/maxBits] >> (maxBits - ((end+1)%maxBits));
   } // zero final maxBits - end bits
   return retval;
 }
