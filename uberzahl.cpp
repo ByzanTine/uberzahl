@@ -486,7 +486,7 @@ uberzahl uberzahl::operator ^ ( const uberzahl& rhs ) const
   return retval;
 }
 
-uberzahl uberzahl::random ( mediumType bits ){
+uberzahl uberzahl::random ( smallType bits ){
   assert( bits > 0 );
   value.clear();
 
@@ -553,10 +553,10 @@ std::pair<std::pair<uberzahl,uberzahl>,bool> uberzahl::inverse ( const uberzahl&
   return std::make_pair(std::make_pair(nextinv.first.second+nextinv.first.first*coeff,nextinv.first.first),!nextinv.second);
 }
 
-smallType uberzahl::bit ( mediumType n ) const
+smallType uberzahl::bit ( smallType n ) const
 {
   // returns the nth bit (0 indexed)
-  mediumType largeBit = n / maxBits;
+  smallType largeBit = n / maxBits;
   smallType smallBit = n % maxBits;
 
   if ( largeBit >= value.size() )
@@ -625,7 +625,7 @@ uberzahl random ( const uberzahl& a, const uberzahl& b )
   return retval;
 }
 
-bool rabinmiller ( const uberzahl& n, mediumType k ){
+bool rabinmiller ( const uberzahl& n, smallType k ){
   // take care of corner cases 1,2,3 and even
   if ( n < 2 ) return false;
   else if ( n < 4 ) return true;
@@ -661,7 +661,7 @@ bool rabinmiller ( const uberzahl& n, mediumType k ){
   return true; // probably prime
 }
 
-uberzahl nextprime ( const uberzahl& n, mediumType accuracy ){
+uberzahl nextprime ( const uberzahl& n, smallType accuracy ){
   // checks every odd number greater or equal to n for primality
   uberzahl retval = n;
   if ( (retval&1) == "0" ) retval = retval + 1;

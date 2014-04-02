@@ -48,7 +48,7 @@ class uberzahl {
     const uberzahl& operator = ( const uberzahl& );
 
     // uses the rand function - to seed use srand (unsigned int seed);
-    uberzahl random ( mediumType );
+    uberzahl random ( smallType );
     friend std::ostream& operator << ( std::ostream&, const uberzahl& );
 
     // standard arithmetic operations
@@ -89,7 +89,7 @@ class uberzahl {
     uberzahl inverse ( const uberzahl& ) const;
     uberzahl gcd ( const uberzahl& ) const;
 
-    smallType bit ( mediumType ) const;
+    smallType bit ( smallType ) const;
     smallType bitLength ( void ) const;
 
   private:
@@ -101,7 +101,7 @@ class uberzahl {
 };
 
 uberzahl random ( const uberzahl&, const uberzahl& );
-bool rabinmiller ( const uberzahl&, unsigned int );
-uberzahl nextprime ( const uberzahl&, unsigned int );
+bool rabinmiller ( const uberzahl&, smallType );
+uberzahl nextprime ( const uberzahl&, smallType );
 
 #endif
