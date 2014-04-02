@@ -92,10 +92,11 @@ class uberzahl {
     smallType bit ( smallType ) const;
     smallType bitLength ( void ) const;
 
+    std::string convert_to_string ( void ) const;
+
   private:
     std::vector<smallType> value;
     void convert_to_numeric ( const char* );
-    std::string convert_to_string ( void ) const;
     void clean_bits ( void );
     std::pair<std::pair<uberzahl,uberzahl>,bool> inverse ( const uberzahl&, const uberzahl& ) const;
 };
