@@ -498,9 +498,9 @@ uberzahl uberzahl::random ( smallType bits ){
   for ( size_t j = 0; j <= longbits; ++j ){
     value.push_back( 0 );
     for ( size_t i = 0; i <= maxBits / RAND_BITS; ++i ){
-      value[i] = value[i] << RAND_BITS/2;
-      value[i] = value[i] << RAND_BITS/2;
-      value[i] = (value[i] + rand()) & mask;
+      value[j] = value[j] << RAND_BITS/2;
+      value[j] = value[j] << RAND_BITS/2;
+      value[j] = (value[j] + rand()) & mask;
     }
   }
 
